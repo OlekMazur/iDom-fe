@@ -1,0 +1,80 @@
+/*
+ * This file is part of iDom-fe.
+ *
+ * Copyright (c) 2018, 2019 Aleksander Mazur
+ *
+ * iDom-fe is free software: you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * iDom-fe is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with iDom-fe. If not, see <https://www.gnu.org/licenses/>.
+ */
+
+/* ---------------------------------- */
+
+table {
+	margin: auto;
+}
+
+table, table thead tr, table tbody tr, table tfoot tr, table thead tr th, table tbody tr td, table tfoot tr th {
+	border: 0;
+	border-spacing: 0;
+	border-collapse: collapse;
+	padding: 0.5em;
+}
+
+table thead tr th, table tbody tr td, table tfoot tr th {
+	vertical-align: top;
+	text-align: left;
+}
+
+table thead tr, table tfoot tr {
+	background-color: #def2f1;
+}
+
+table.highlight tbody tr {
+	transition-duration: 0.2s;
+}
+
+table.striped tbody tr:nth-child(odd) {
+	background-color: #feffff;
+}
+
+table.striped tbody tr:nth-child(even) {
+	background-color: #f8fcfc;
+}
+
+table.highlight tbody tr:hover {
+	background-color: #def2f1;
+}
+
+/* ---------------------------------- */
+
+/*
+td.value-trunc {
+	text-align: right;
+	margin-right: 0;
+	padding-right: 0;
+}
+
+td.value-frac {
+	text-align: left;
+	margin-left: 0;
+	margin-right: 0;
+	padding-left: 0;
+	padding-right: 0;
+}
+*/
+
+td.min-width {
+	min-width: 6em;
+}
+
+/* ---------------------------------- */

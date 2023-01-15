@@ -1,0 +1,129 @@
+/*
+ * This file is part of iDom-fe.
+ *
+ * Copyright (c) 2018, 2019 Aleksander Mazur
+ *
+ * iDom-fe is free software: you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * iDom-fe is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with iDom-fe. If not, see <https://www.gnu.org/licenses/>.
+ */
+
+/* ---------------------------------- */
+
+form {
+	background-color: #feffff;
+	border-radius: 0.5em;
+	padding: 0.5em;
+}
+
+.form-row, .form-col {
+	margin-top: 0.25em;
+}
+
+div.form-row::after {
+	content: "";
+	display: table;
+	clear: both;
+}
+
+.vcenter, .form-col {
+	vertical-align: middle;
+}
+
+/* ---------------------------------- */
+
+.button, button {
+	border: none;
+	border-radius: 0.25em;
+	cursor: pointer;
+	transition-duration: 0.2s;
+}
+
+div.button, a.button, button {
+	display: inline-block;
+	padding: 0.5em 1em;
+	margin-right: 0.25em;
+	margin-top: 0.25em;
+	text-decoration: none;
+	box-sizing: border-box;
+}
+
+div.button-off, a.button-off, button[type="button"] {
+	background-color: #def2f1;
+	color: #17252a;
+}
+
+div.button-on, a.button-on, button[type="submit"], button.button-on {
+	background-color: #2b7a78;
+	color: #feffff;
+}
+
+.border {
+	border: solid 1px #2b7a78;
+}
+
+button.button-delete {
+	background-color: #17252a;
+	color: #feffff;
+}
+
+.button:hover, button:hover {
+	background-color: #3aafa9;
+}
+
+/* ---------------------------------- */
+
+input, select, textarea {
+	border: 1px solid #3aafa9;
+	border-radius: 0.25em;
+	padding: 0.25em;
+	width: 100%;
+	min-width: 3em;
+	resize: vertical;
+	box-sizing: border-box;
+}
+
+input[type="checkbox"], input[type="radio"] {
+	width: inherit;
+	min-width: inherit;
+}
+
+input:focus, select:focus, textarea:focus {
+	border-color: #2b7a78;
+}
+
+:invalid, .invalid {
+	border: 2px solid #af3a39;
+}
+
+/* ---------------------------------- */
+
+input:read-only {
+	background-color: #def2f1;
+}
+
+:disabled, .disabled {
+	opacity: 0.5;
+	cursor: not-allowed;
+}
+
+/* ---------------------------------- */
+
+ul.list-inline {
+	display: inline;
+	padding: 0;
+}
+
+li.list-inline {
+	display: inline;
+	padding-right: 1em;
+}

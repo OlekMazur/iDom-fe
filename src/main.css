@@ -1,0 +1,96 @@
+/*
+ * This file is part of iDom-fe.
+ *
+ * Copyright (c) 2018, 2019 Aleksander Mazur
+ *
+ * iDom-fe is free software: you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * iDom-fe is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with iDom-fe. If not, see <https://www.gnu.org/licenses/>.
+ */
+
+/* ---------------------------------- */
+
+html, body, button, input, select, textarea {
+	font-family: "DejaVu Sans Condensed", "Trebuchet MS", "Arial Condensed", Arial, sans-serif;
+	background-color: #feffff;
+	color: #17252a;
+}
+
+a, a:visited, a:focus, a:active {
+	color: #2b7a78;
+	text-decoration: none;
+}
+
+a:hover {
+	color: #3aafa9;
+	text-decoration: none;
+}
+
+div {
+	box-sizing: border-box;
+}
+
+hr {
+	border: 1px solid #3aafa9;
+}
+
+#main {
+	width: 100%;
+	padding-top: 3em;
+}
+
+/* ---------------------------------- */
+
+.full-width {
+	width: 100%;
+}
+
+.half-width {
+	width: 50%;
+}
+
+.center {
+	text-align: center;
+}
+
+.right {
+	text-align: right;
+}
+
+.bold {
+	font-weight: bold;
+}
+
+.italic {
+	font-style: italic;
+}
+
+.small {
+	font-size: 75%;
+}
+
+.big {
+	font-size: 125%;
+}
+
+/* ---------------------------------- */
+
+@keyframes blink {
+	0% { opacity: 1; }
+	50% { opacity: 1; }
+	51% { opacity: 0; }
+	100% { opacity: 0; }
+}
+
+.blink {
+	animation: blink 0.5s linear infinite;
+}

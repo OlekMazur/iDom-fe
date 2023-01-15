@@ -1,0 +1,45 @@
+/*
+ * This file is part of iDom-fe.
+ *
+ * Copyright (c) 2018, 2019, 2020 Aleksander Mazur
+ *
+ * iDom-fe is free software: you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * iDom-fe is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with iDom-fe. If not, see <https://www.gnu.org/licenses/>.
+ */
+
+/**************************************/
+
+export function strToInt(val: string): number {
+	if (!/^-?\d+$/.test(val))
+		throw new Error(val)
+	return parseInt(val, 10)
+}
+
+export function strToFloat(val: string): number {
+	if (!/^-?\d+(\.\d+)?$/.test(val))
+		throw new Error(val)
+	return parseFloat(val)
+}
+
+/**************************************/
+
+export function isRoundNumber(val: number): boolean {
+	const delta = Math.abs(val % 1)
+	return delta < EPSILON || delta > 1 - EPSILON
+}
+
+export function isNearZero(val: number): boolean {
+	return val < EPSILON && val > -EPSILON
+}
+
+const EPSILON = 0.001

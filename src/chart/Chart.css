@@ -1,0 +1,83 @@
+/*
+ * This file is part of iDom-fe.
+ *
+ * Copyright (c) 2014, 2015, 2016, 2018, 2019 Aleksander Mazur
+ *
+ * iDom-fe is free software: you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * iDom-fe is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with iDom-fe. If not, see <https://www.gnu.org/licenses/>.
+ */
+
+.chart {
+	font-family: "Lucida Console", "Nimbus Mono", "Courier New", Courier, monospace;
+	font-size: 14px;
+	margin: 0.5em;
+	padding: 0;
+}
+
+text {
+	fill: #000;
+}
+
+line {
+	stroke: #111;
+	stroke-width: 2px;
+	fill: none;
+}
+
+.chart-unit {
+	text-anchor: left;
+	dominant-baseline: bottom;
+	font-weight: bold;
+}
+
+.chart-grid-line {
+	stroke: #999;
+	stroke-width: 1px;
+	fill: none;
+}
+
+.chart-grid-line-bold {
+	stroke: #999;
+	stroke-width: 2px;
+	fill: none;
+}
+
+.chart-grid-label {
+	text-anchor: end;
+	dominant-baseline: middle;
+}
+
+.chart-grid-label-right {
+	text-anchor: start;
+	dominant-baseline: middle;
+}
+
+.chart-sensor-plot {
+	stroke: #000;
+	stroke-width: 1.5px;
+	fill: none;
+}
+
+.chart-sensor-plot:hover {
+	stroke-width: 3px;
+}
+
+.chart-device-plot {
+	stroke: none;
+	fill: #000;
+	opacity: 0.3;
+}
+
+.chart-device-plot:hover {
+	opacity: 0.8;
+}

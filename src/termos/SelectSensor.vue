@@ -1,0 +1,44 @@
+<!--
+This file is part of iDom-fe.
+
+Copyright (c) 2018, 2019 Aleksander Mazur
+
+iDom-fe is free software: you can redistribute it and/or
+modify it under the terms of the GNU General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
+
+iDom-fe is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with iDom-fe. If not, see <https://www.gnu.org/licenses/>.
+-->
+
+<input v-if="editing && custom" v-model="newValue" ref="input"
+	title="Szesnastkowy identyfikator czujnika (48 środkowych bitów)"
+	placeholder="Identyfikator"
+	type="text" size="12" minlength="12" maxlength="12" pattern="[0-9A-F]{12}"
+	:style="{ width: width + 'px' }"
+	@focus="focused = true" @blur="focused && commit()"
+	@keydown.enter="commit" @keydown.esc="rollback"
+/>
+<select v-else-if="editing" v-model="newValue" ref="input"
+	:style="{ width: width + 'px' }"
+	@focus="focused = true" @blur="focused && commit()"
+	@keydown.enter="commit" @keydown.esc="rollback"
+	@change="selectChange($event.target.value)"
+>
+	<optgroup label="Znane czujniki" v-if="mapping">
+		<option v-for="(obj, id) in mapping.sensors" :key="id" :value="id">{{ describeSensor(id) }}</option>
+	</optgroup>
+	<optgroup label="Wszystkie czujniki">
+		<option value="">Czujnik o podanym identyfikatorze</option>
+	</optgroup>
+</select>
+<a href="#" v-else-if="value" @click.prevent="begin" ref="view">
+	{{ describeSensor(value) }}
+</a>
+<font-awesome-icon v-else :icon="faSpinner" pulse fixed-width />

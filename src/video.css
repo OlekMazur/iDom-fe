@@ -1,0 +1,114 @@
+/*
+ * This file is part of iDom-fe.
+ *
+ * Copyright (c) 2018 Aleksander Mazur
+ *
+ * iDom-fe is free software: you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * iDom-fe is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with iDom-fe. If not, see <https://www.gnu.org/licenses/>.
+ */
+
+/* ---------------------------------- */
+
+div.videos {
+	display: grid;
+	grid-gap: 0.5em;
+	margin: 0.5em;
+}
+
+@media (min-width: 600px) {
+	div.videos {
+		grid-template-columns: repeat(2, 1fr);
+	}
+}
+
+@media (min-width: 900px) {
+	div.videos {
+		grid-template-columns: repeat(3, 1fr);
+	}
+}
+
+@media (min-width: 1200px) {
+	div.videos {
+		grid-template-columns: repeat(4, 1fr);
+	}
+}
+
+@media (min-width: 1500px) {
+	div.videos {
+		grid-template-columns: repeat(5, 1fr);
+	}
+}
+
+div.videos-under {
+	padding: 0.5em;
+}
+
+/* ---------------------------------- */
+
+div.video {
+	padding: 0.5em;
+	border-radius: 0.5em;
+	transition-duration: 0.4s;
+	background-color: #def2f1;
+	color: #17252a;
+}
+
+/*
+div.video:hover {
+	background-color: #feffff;
+}
+*/
+
+img.video {
+	width: 100%;
+	height: auto;
+	border-radius: 0.25em;
+}
+
+div.video-row {
+	overflow: auto;
+}
+
+div.video-row-img {
+	padding: 0.25em 0;
+}
+
+span.video-left {
+	float: left;
+}
+
+span.video-right {
+	float: right;
+}
+
+span.video-player {
+	padding-left: 1em;
+}
+
+/* ---------------------------------- */
+
+canvas.video {
+	width: 100%;
+	height: auto;
+}
+
+/* stylelint-disable value-no-vendor-prefix */
+canvas.pixelated {
+	image-rendering: pixelated;
+	image-rendering: -moz-crisp-edges;
+	image-rendering: -webkit-optimize-contrast;
+	image-rendering: -o-crisp-edges;
+}
+/* stylelint-enable value-no-vendor-prefix */
+
+/* ---------------------------------- */

@@ -1,0 +1,36 @@
+name: Build
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+    - name: Setup node
+      uses: actions/setup-node@v3
+      with:
+        node-version: 16
+        cache: 'npm'
+    - name: Install dependencies
+      run: npm ci
+    - name: Build
+      run: make
+    - name: Prepare artifact
+      run: |
+        ARGS=
+        cd output
+        for subdir in *; do
+          [ -d "$subdir" -a "$subdir" != intermediate ] && ARGS="$ARGS $subdir"
+        done
+        tar cvf iDom-fe.tar $ARGS
+    - name: Upload artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: iDom-fe
+        path: output/iDom-fe.tar
