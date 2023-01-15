@@ -8,7 +8,7 @@ based on Vue.js version 2.
 
 ![img]
 
-Three variants are built out of the same source.
+Three variants are built out of the same source:
 
 **local** variant
 -----------------
@@ -44,4 +44,4 @@ along with iDom-fe. If not, see <https://www.gnu.org/licenses/>.
 
 [GNU General Public License]: LICENSE.md
 [img]: img/iDom-fe.png
-[cloud setup file]: data/cloud/Setup.ts
+[cloud setup file]: src/data/cloud/Setup.ts

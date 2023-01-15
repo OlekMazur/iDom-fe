@@ -1,4 +1,4 @@
-/*
+/*!
  * This file is part of iDom-fe.
  *
  * Copyright (c) 2018 Aleksander Mazur
