@@ -1,7 +1,7 @@
 /*
  * This file is part of iDom-fe.
  *
- * Copyright (c) 2019, 2020 Aleksander Mazur
+ * Copyright (c) 2019, 2020, 2021, 2023 Aleksander Mazur
  *
  * iDom-fe is free software: you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -19,11 +19,8 @@
 
 import { ref, set } from 'firebase/database'
 import { ref as child, getDownloadURL, getMetadata, uploadBytes } from 'firebase/storage'
-import { fetch as polyFetch } from 'whatwg-fetch'
-import { sha256 } from 'js-sha256'
+import { sha256 } from '../../crypto'
 import { fileRef, database } from './Setup'
-
-const fetch = window.fetch || polyFetch
 
 const commonFetchOptions: RequestInit = {
 	mode: 'cors',
@@ -59,16 +56,18 @@ export function cloudDownloadFile(place: string, fn: string, cksum: string): Pro
 
 export function cloudUploadFile(place: string, fn: string, data: ArrayBuffer, variableID: string): Promise<void> {
 	console.log('cloudUploadFile', place, fn, data.byteLength, variableID)
-	const cksum = sha256(data)
-	console.log('cksum:', cksum)
-	const file = cloudFileStorageRef(fn, cksum)
-	return getMetadata(file)
-	//.then(() => {})	// promise fulfills if file exists
-	.catch(() => uploadBytes(file, data, {
-		contentType: 'application/octet-stream',
-		cacheControl: 'private, max-age=31536000',
-	})).then(() => {
-		if (variableID)
-			return set(ref(database, `things/${place}/now/variables/${variableID}/want`), cksum)
+	return sha256(data)
+	.then((cksum) => {
+		console.log('cksum:', cksum)
+		const file = cloudFileStorageRef(fn, cksum)
+		return getMetadata(file)
+		//.then(() => {})	// promise fulfills if file exists
+		.catch(() => uploadBytes(file, data, {
+			contentType: 'application/octet-stream',
+			cacheControl: 'private, max-age=31536000',
+		})).then(() => {
+			if (variableID)
+				return set(ref(database, `things/${place}/now/variables/${variableID}/want`), cksum)
+		})
 	})
 }

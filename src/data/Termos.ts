@@ -1,7 +1,7 @@
 /*
  * This file is part of iDom-fe.
  *
- * Copyright (c) 2017, 2018, 2019, 2021, 2022 Aleksander Mazur
+ * Copyright (c) 2017, 2018, 2019, 2021, 2022, 2023 Aleksander Mazur
  *
  * iDom-fe is free software: you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -183,12 +183,7 @@ export function termosNew(): ITermos {
 
 /* ---------------------------------- */
 
-function byte2hex(byte: number): string {
-	let rv = byte.toString(16).toUpperCase()
-	while (rv.length < 2)
-		rv = '0' + rv
-	return rv
-}
+const byte2hex = (byte: number): string => byte.toString(16).toUpperCase().padStart(2, '0')
 
 function decodeBCD(bcd: number) {
 	let result = 0

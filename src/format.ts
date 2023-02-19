@@ -1,7 +1,7 @@
 /*
  * This file is part of iDom-fe.
  *
- * Copyright (c) 2018, 2019, 2021 Aleksander Mazur
+ * Copyright (c) 2018, 2019, 2021, 2023 Aleksander Mazur
  *
  * iDom-fe is free software: you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -47,10 +47,7 @@ export function formatNumberWithUnit(
 /**************************************/
 
 export function formatNumberLeadingZeros(x: number, len: number): string {
-	let s = x.toString()
-	while (s.length < len)
-		s = '0' + s
-	return s
+	return x.toString().padStart(len, '0')
 }
 
 /**************************************/

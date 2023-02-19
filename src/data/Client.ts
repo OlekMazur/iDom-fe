@@ -1,7 +1,7 @@
 /*
  * This file is part of iDom-fe.
  *
- * Copyright (c) 2018, 2019, 2020, 2021 Aleksander Mazur
+ * Copyright (c) 2018, 2019, 2020, 2021, 2023 Aleksander Mazur
  *
  * iDom-fe is free software: you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -16,10 +16,6 @@
  * You should have received a copy of the GNU General Public License
  * along with iDom-fe. If not, see <https://www.gnu.org/licenses/>.
  */
-
-import { fetch as polyFetch } from 'whatwg-fetch'
-
-const fetch = window.fetch || polyFetch
 
 export interface IArgs {
 	[param: string]: string | string[] | number

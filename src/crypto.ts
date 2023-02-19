@@ -1,7 +1,7 @@
 /*
  * This file is part of iDom-fe.
  *
- * Copyright (c) 2018, 2019 Aleksander Mazur
+ * Copyright (c) 2023 Aleksander Mazur
  *
  * iDom-fe is free software: you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -17,13 +17,13 @@
  * along with iDom-fe. If not, see <https://www.gnu.org/licenses/>.
  */
 
-module.exports = {
-	presets: [
-		['@babel/env', {
-			useBuiltIns: 'entry',
-			corejs: 3,
-			//debug: true,
-			modules: false,
-		}],
-	],
+/**************************************/
+
+export function sha256(data: ArrayBuffer): Promise<string> {
+	// https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/digest
+	return crypto.subtle.digest('SHA-256', data).then((hash) =>
+		Array.from(new Uint8Array(hash)).map((b) => b.toString(16).padStart(2, '0')).join('')
+	)
 }
+
+/**************************************/
