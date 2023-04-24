@@ -1,7 +1,7 @@
 <!--
 This file is part of iDom-fe.
 
-Copyright (c) 2018, 2019, 2023 Aleksander Mazur
+Copyright (c) 2023 Aleksander Mazur
 
 iDom-fe is free software: you can redistribute it and/or
 modify it under the terms of the GNU General Public License as
@@ -17,9 +17,6 @@ You should have received a copy of the GNU General Public License
 along with iDom-fe. If not, see <https://www.gnu.org/licenses/>.
 -->
 
-<div id="main">
-	<MenuEntry :items="routes" :status="status" :message="message" :nh="nh" />
-	<transition name="basic" mode="out-in">
-		<router-view :places-things="placesThings" :system="system" :audios="audios" />
-	</transition>
-</div>
+<a href="#" v-if="supported && !granted" title="Włącz powiadomienia" @click.prevent="click">
+	<font-awesome-icon :icon="icon" size="lg" fixed-width />
+</a>

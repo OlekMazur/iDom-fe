@@ -1,7 +1,7 @@
 /*
  * This file is part of iDom-fe.
  *
- * Copyright (c) 2018, 2019, 2022 Aleksander Mazur
+ * Copyright (c) 2018, 2019, 2022, 2023 Aleksander Mazur
  *
  * iDom-fe is free software: you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -29,7 +29,7 @@ import { faBuilding } from '@fortawesome/free-solid-svg-icons/faBuilding'
 import { faWrench } from '@fortawesome/free-solid-svg-icons/faWrench'
 import { faFileAlt } from '@fortawesome/free-solid-svg-icons/faFileAlt'
 import { faSlidersH } from '@fortawesome/free-solid-svg-icons/faSlidersH'
-import { faTable } from '@fortawesome/free-solid-svg-icons/faTable'
+import { faTimeline } from '@fortawesome/free-solid-svg-icons/faTimeline'
 import { faUserSecret } from '@fortawesome/free-solid-svg-icons/faUserSecret'
 import { faHeadphones } from '@fortawesome/free-solid-svg-icons/faHeadphones'
 import { faCopy } from '@fortawesome/free-solid-svg-icons/faCopy'
@@ -59,6 +59,7 @@ import { DataStatus, IDataProvider,
 import { IPlacesThings, IThings, IThingsListener } from './data/Things'
 import { ISystemInfo, ISystemInfoListener } from './data/System'
 import { IAudios, IAudiosListener } from './data/Audio'
+import { NotificationHub } from './notification'
 
 declare const VARIANT: string
 
@@ -118,7 +119,7 @@ if (VARIANT === 'cloud' || VARIANT === 'api1') {
 		meta: {
 			title: 'Historia pracy urządzenia',
 			label: 'Historia',
-			icon: faTable,
+			icon: faTimeline,
 			provider: 'things',
 		},
 	})
@@ -269,6 +270,7 @@ export default Vue.extend({
 			audios: undefined as undefined | IAudios,
 			status: 'unknown' as DataStatus,
 			message: '',
+			nh: new NotificationHub(),
 		}
 	},
 	created: function() {
@@ -328,6 +330,8 @@ export default Vue.extend({
 		updateThings: function(place: string, things: IThings) {
 			//console.log('updateThings', place)
 			this.$set(this.placesThings, place, things)
+			// notification hook
+			this.nh.updateThings(place, things)
 		},
 		updateSystem: function(system: ISystemInfo) {
 			this.system = system

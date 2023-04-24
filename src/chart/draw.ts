@@ -1,7 +1,7 @@
 /*
  * This file is part of iDom-fe.
  *
- * Copyright (c) 2014, 2015, 2016, 2018, 2019 Aleksander Mazur
+ * Copyright (c) 2014, 2015, 2016, 2018, 2019, 2023 Aleksander Mazur
  *
  * iDom-fe is free software: you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -36,8 +36,8 @@ export interface IScaleInfo {
 
 /**************************************/
 
-export const CHART_OFFSET_X = 40
-export const CHART_OFFSET_BOTTOM = 80
+export const CHART_OFFSET_X = 50
+export const CHART_OFFSET_BOTTOM = 100
 
 /**************************************/
 

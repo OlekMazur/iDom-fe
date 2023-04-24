@@ -35,7 +35,7 @@ import NeighbourDevice from './NeighbourDevice'
 import NeighbourHistory from './NeighbourHistory'
 import { IconDefinition } from '@fortawesome/fontawesome-common-types'
 import { faBluetooth } from '@fortawesome/free-brands-svg-icons/faBluetooth'
-import { faBroadcastTower } from '@fortawesome/free-solid-svg-icons/faBroadcastTower'
+import { faTowerCell } from '@fortawesome/free-solid-svg-icons/faTowerCell'
 import { faPhone } from '@fortawesome/free-solid-svg-icons/faPhone'
 import { faBan } from '@fortawesome/free-solid-svg-icons/faBan'
 import './neighbours.css'
@@ -69,7 +69,7 @@ const typeIcons: INeighbourTypeIcons = {
 		title: 'Urządzenia Bluetooth',
 	},
 	'bts': {
-		icon: faBroadcastTower,
+		icon: faTowerCell,
 		title: 'Stacje bazowe telefonii komórkowej',
 	},
 	'tel': {

@@ -1,7 +1,7 @@
 /*
  * This file is part of iDom-fe.
  *
- * Copyright (c) 2014, 2015, 2016, 2018 Aleksander Mazur
+ * Copyright (c) 2014, 2015, 2016, 2018, 2019, 2023 Aleksander Mazur
  *
  * iDom-fe is free software: you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -18,7 +18,7 @@
  */
 
 import { ISize, IScaleInfo, CHART_OFFSET_X, CHART_OFFSET_BOTTOM } from './draw'
-import { formatHHMM, formatDate } from '../format'
+import { formatHHMM, formatDate, formatNumberWithUnit } from '../format'
 import { isRoundNumber, isNearZero } from '../utils'
 
 /**************************************/
@@ -172,7 +172,7 @@ function drawGridHorizontal(
 		}
 		result.labelsH.push({
 			pos: size.height - CHART_OFFSET_BOTTOM - offset * scale.scaleY,
-			label: val.toFixed(gridStepY.afterDot),
+			label: gridStepY.afterDot ? val.toFixed(gridStepY.afterDot) : formatNumberWithUnit(val),
 			clazz: isRoundNumber(val) ? 'bold' : '',
 		})
 	}

@@ -1,7 +1,7 @@
 /*
  * This file is part of iDom-fe.
  *
- * Copyright (c) 2018, 2019 Aleksander Mazur
+ * Copyright (c) 2018, 2019, 2020, 2021, 2023 Aleksander Mazur
  *
  * iDom-fe is free software: you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -45,7 +45,7 @@ import { faCog } from '@fortawesome/free-solid-svg-icons/faCog'
 import { faPhone } from '@fortawesome/free-solid-svg-icons/faPhone'
 import { faCreditCard } from '@fortawesome/free-solid-svg-icons/faCreditCard'
 import { faHdd } from '@fortawesome/free-solid-svg-icons/faHdd'
-import { faBroadcastTower } from '@fortawesome/free-solid-svg-icons/faBroadcastTower'
+import { faTowerCell } from '@fortawesome/free-solid-svg-icons/faTowerCell'
 import { faInfo } from '@fortawesome/free-solid-svg-icons/faInfo'
 import { faFileAlt } from '@fortawesome/free-solid-svg-icons/faFileAlt'
 import { faSlidersH } from '@fortawesome/free-solid-svg-icons/faSlidersH'
@@ -109,7 +109,7 @@ export function getVariableIcon(variable: IVariable): IconDefinition {
 		case 'modem.ci':
 		case 'modem.lac':
 		case 'modem.reg':
-			return faBroadcastTower
+			return faTowerCell
 		case SYNC_TERMOSTAT_BIN:
 			return faSlidersH
 	}
@@ -134,7 +134,7 @@ export function getNeighbourIcon(neighbour: INeighbour): IconDefinition {
 			case 'bt':
 				return faBluetooth
 			case 'bts':
-				return faBroadcastTower
+				return faTowerCell
 			case 'tel':
 				return faPhone
 		}

@@ -70,9 +70,9 @@ export interface ITermosProgramTimeRange {
 
 /** Data associated with single time range of a thermal daily program. */
 export interface ITermosThermalProgramEntry extends ITermosProgramTimeRange {
-	/** Set temperature (stored as fixed point 8:8). */
+	/** Set temperature (stored as fixed point 8:8, signed). */
 	temp: number
-	/** Hystheresis (stored as fixed point 4:4). */
+	/** Hystheresis (stored as fixed point 4:4, unsigned). */
 	hyst: number
 }
 
@@ -243,11 +243,16 @@ const loadTimerProgramEntry = (data: Uint8Array, offset: number, range: ITermosP
 })
 
 const loadThermalProgramEntry = (data: Uint8Array, offset: number, range: ITermosProgramTimeRange)
-	: ITermosThermalProgramEntry => ({
-	...range,
-	temp: ((data[offset + 0] << 8) | data[offset + 1]) / 256,
-	hyst: data[offset + 2] / 16,
-})
+	: ITermosThermalProgramEntry => {
+	let temp: number = (data[offset + 0] << 8) | data[offset + 1]
+	if (temp & 0x8000)	// sign
+		temp -= 0x10000
+	return {
+		...range,
+		temp: temp / 256,
+		hyst: data[offset + 2] / 16,
+	}
+}
 
 function loadMissingPrograms(data: Uint8Array, result: ITermosPrograms, week: TTermosWeek, cb: TLoad2ndEntry): void {
 	for (const day of week)

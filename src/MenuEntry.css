@@ -1,7 +1,7 @@
 /*
  * This file is part of iDom-fe.
  *
- * Copyright (c) 2018, 2019, 2022 Aleksander Mazur
+ * Copyright (c) 2018, 2019, 2022, 2023 Aleksander Mazur
  *
  * iDom-fe is free software: you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -62,7 +62,7 @@ td.menu.router-link-active, td.menu.router-link-active:focus, td.menu.router-lin
 	white-space: nowrap;
 }
 
-@media (max-width: 1000px) {
+@media (width < 1000px) {
 	.menu-label {
 		display: none;
 	}

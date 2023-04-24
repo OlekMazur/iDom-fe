@@ -1,7 +1,7 @@
 /*
  * This file is part of iDom-fe.
  *
- * Copyright (c) 2019 Aleksander Mazur
+ * Copyright (c) 2019, 2020, 2023 Aleksander Mazur
  *
  * iDom-fe is free software: you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -98,7 +98,7 @@ function parseResult(type: string, csv: string): boolean {
 			if (colsLen !== colID.length)
 				throw new Error('Nieprawidłowa liczba kolumn - ' + colsLen + ' zamiast ' + colID.length + ': ' + lines[i])
 
-			ts += strToInt(head)
+			ts += head === '' ? 60 : strToInt(head)
 			for (let j = 0; j < colsLen; j++)
 				if (cols[j] !== '') {
 					const value = type === 'devices' ? cols[j] !== '0' : strToFloat(cols[j])

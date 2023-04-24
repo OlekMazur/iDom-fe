@@ -1,7 +1,7 @@
 /*
  * This file is part of iDom-fe.
  *
- * Copyright (c) 2018 Aleksander Mazur
+ * Copyright (c) 2018, 2023 Aleksander Mazur
  *
  * iDom-fe is free software: you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -25,25 +25,25 @@ div.videos {
 	margin: 0.5em;
 }
 
-@media (min-width: 600px) {
+@media (width > 600px) {
 	div.videos {
 		grid-template-columns: repeat(2, 1fr);
 	}
 }
 
-@media (min-width: 900px) {
+@media (width > 900px) {
 	div.videos {
 		grid-template-columns: repeat(3, 1fr);
 	}
 }
 
-@media (min-width: 1200px) {
+@media (width > 1200px) {
 	div.videos {
 		grid-template-columns: repeat(4, 1fr);
 	}
 }
 
-@media (min-width: 1500px) {
+@media (width > 1500px) {
 	div.videos {
 		grid-template-columns: repeat(5, 1fr);
 	}
@@ -102,13 +102,8 @@ canvas.video {
 	height: auto;
 }
 
-/* stylelint-disable value-no-vendor-prefix */
 canvas.pixelated {
 	image-rendering: pixelated;
-	image-rendering: -moz-crisp-edges;
-	image-rendering: -webkit-optimize-contrast;
-	image-rendering: -o-crisp-edges;
 }
-/* stylelint-enable value-no-vendor-prefix */
 
 /* ---------------------------------- */

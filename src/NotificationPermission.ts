@@ -1,7 +1,7 @@
 /*
  * This file is part of iDom-fe.
  *
- * Copyright (c) 2018, 2019, 2023 Aleksander Mazur
+ * Copyright (c) 2023 Aleksander Mazur
  *
  * iDom-fe is free software: you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -17,20 +17,30 @@
  * along with iDom-fe. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import template from './MenuEntry.vue.js'
+import template from './NotificationPermission.vue.js'
 import Vue from 'vue'
-import Status from './status'
-import NotificationPermission from './NotificationPermission'
+import { faComment } from '@fortawesome/free-solid-svg-icons/faComment'
 import { NotificationHub } from './notification'
-import './MenuEntry.css'
 
 export default Vue.extend({
 	...template,
-	components: { Status, NotificationPermission },
 	props: {
-		items: Array,
-		status: String,
-		message: String,
 		nh: NotificationHub,
+	},
+	data: function() {
+		return {
+			supported: this.nh && this.nh.supported,
+			granted: this.nh && this.nh.isGranted(),
+			icon: faComment,
+		}
+	},
+	methods: {
+		click: function(): void {
+			this.nh && this.nh.requestPermission().then(() => {
+				this.granted = true
+			}).catch((e) => {
+				console.log(e)
+			})
+		},
 	},
 })

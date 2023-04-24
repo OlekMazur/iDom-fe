@@ -1,0 +1,16 @@
+{
+	"ignore": {
+		"@fortawesome/vue-fontawesome": {
+			"versions": ">2",
+			"reason": "vue.js 2"
+		},
+		"vue": {
+			"versions": ">2",
+			"reason": "vue.js 2"
+		},
+		"vue-router": {
+			"versions": ">3",
+			"reason": "vue.js 2"
+		}
+	}
+}

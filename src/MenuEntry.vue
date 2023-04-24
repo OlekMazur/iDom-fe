@@ -1,7 +1,7 @@
 <!--
 This file is part of iDom-fe.
 
-Copyright (c) 2018, 2019, 2022 Aleksander Mazur
+Copyright (c) 2018, 2019, 2022, 2023 Aleksander Mazur
 
 iDom-fe is free software: you can redistribute it and/or
 modify it under the terms of the GNU General Public License as
@@ -25,6 +25,9 @@ along with iDom-fe. If not, see <https://www.gnu.org/licenses/>.
 					<font-awesome-icon :icon="item.meta.icon" size="lg" />
 					<span class="menu-label"> {{ item.meta.label || item.meta.title }}</span>
 				</router-link>
+				<td class="menu nohover">
+					<NotificationPermission :nh="nh" />
+				</td>
 				<td class="menu nohover">
 					<Status :status="status" :message="message" />
 				</td>

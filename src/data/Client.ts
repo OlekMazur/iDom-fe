@@ -36,7 +36,7 @@ function encodeArgs(args: IArgs): string {
 function newCommonFetchOptions(): RequestInit {
 	return {
 		mode: 'same-origin',
-		cache: 'reload',
+		//cache: 'reload',
 		redirect: 'error',
 		keepalive: true,
 	}

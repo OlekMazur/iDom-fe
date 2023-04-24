@@ -5,7 +5,7 @@
  *
  * This file is part of iDom-fe.
  *
- * Copyright (c) 2019 Aleksander Mazur
+ * Copyright (c) 2019, 2023 Aleksander Mazur
  *
  * iDom-fe is free software: you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -22,7 +22,7 @@
  */
 
 const fs = require('fs')
-const glob = require('glob')
+const { glob } = require('glob')
 const compiler = require('vue-template-compiler')
 const transpile = require('vue-template-es2015-compiler')
 //const UglifyJS = require('uglify-js')
@@ -62,7 +62,8 @@ function beautify(code) {
 }
 */
 
-glob(SRC + '/**/*.vue', function(err, files) {
+glob(SRC + '/**/*.vue')
+.then((files) => {
 	for (let i = 0, len = files.length; i < len; i++) {
 		let parts = files[i].split('/')
 		if (parts.shift() != SRC) {
