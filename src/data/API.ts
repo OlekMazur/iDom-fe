@@ -1,7 +1,7 @@
 /*
  * This file is part of iDom-fe.
  *
- * Copyright (c) 2018, 2019, 2020, 2021, 2022 Aleksander Mazur
+ * Copyright (c) 2018, 2019, 2020, 2021, 2022, 2023 Aleksander Mazur
  *
  * iDom-fe is free software: you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -350,7 +350,7 @@ export function wakeup(session: string): Promise<void> {
 
 export function queryTermos(place: string, cksum: string): Promise<ArrayBuffer> {
 	if (VARIANT === 'local')
-		return LocalQueryTermos()
+		return LocalQueryTermos(cksum)
 	if (VARIANT === 'cloud')
 		return CloudQueryTermos(place, cksum)
 	return OperationUnsupported()
@@ -503,11 +503,11 @@ export interface ILogFile {
 
 export type TLogsListener = (place: string, logs: ILogFile[]) => void
 
-export function LogsRegisterListener(place: string, listener: TLogsListener) {
+export function LogsRegisterListener(place: string, listener: TLogsListener, limit?: number) {
 	if (VARIANT === 'local')
-		return localLogsRegisterListener(place, listener)
+		return localLogsRegisterListener(place, listener, limit)
 	if (VARIANT === 'cloud')
-		return cloudLogsRegisterListener(place, listener)
+		return cloudLogsRegisterListener(place, listener, limit)
 	throw newOperationUnsupported()
 }
 

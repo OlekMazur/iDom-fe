@@ -1,7 +1,7 @@
 /*
  * This file is part of iDom-fe.
  *
- * Copyright (c) 2018, 2019, 2020, 2022 Aleksander Mazur
+ * Copyright (c) 2018, 2019, 2020, 2022, 2023 Aleksander Mazur
  *
  * iDom-fe is free software: you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -35,6 +35,7 @@ import { strToInt } from '../utils'
 import {
 	storageLoadStr, storageSaveStr,
 	storageLoadNumber, storageSaveNumber,
+	storageLoadBool, storageSaveBool,
 } from '../storage'
 import VideosAtOnePlace from './VideosAtOnePlace'
 import VideosAtAllPlaces from './VideosAtAllPlaces'
@@ -96,7 +97,7 @@ export default Vue.extend({
 			// meaning of place === '' depends on placeSelection:
 			// placeSelection ? empty place means many : empty place is valid ID of a particular place
 			place: undefined as undefined | string,	// undefined only at initial stage; never reset to undefined by user
-			allPlay: false,
+			allPlay: storageLoadBool('videoAllPlay'),
 			allPlacesExcluded,
 		}
 	},
@@ -180,6 +181,9 @@ export default Vue.extend({
 		},
 		showAtOnce: function(): void {
 			storageSaveNumber('videoShowAtOnce', this.showAtOnce)
+		},
+		allPlay: function(): void {
+			storageSaveBool('videoAllPlay', this.allPlay)
 		},
 	},
 	methods: {

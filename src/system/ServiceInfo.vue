@@ -1,7 +1,7 @@
 <!--
 This file is part of iDom-fe.
 
-Copyright (c) 2018, 2019, 2023 Aleksander Mazur
+Copyright (c) 2023 Aleksander Mazur
 
 iDom-fe is free software: you can redistribute it and/or
 modify it under the terms of the GNU General Public License as
@@ -17,12 +17,14 @@ You should have received a copy of the GNU General Public License
 along with iDom-fe. If not, see <https://www.gnu.org/licenses/>.
 -->
 
-<table class="highlight">
-	<tbody>
-		<template v-for="item in items">
-			<Service :key="item.name" :data="item" :uptime="uptime" />
-			<ServiceInfo v-if="item.info" :key="item.name + ' info'" :data="item.info" />
-			<ServiceInfo v-if="item.status" :key="item.name + ' status'" :data="item.status" />
-		</template>
-	</tbody>
-</table>
+<tr>
+	<td class="center"><font-awesome-icon :icon="icon" /></td>
+	<td class="min-width" colspan="4">
+		<ul v-if="data">
+			<li v-for="(value, name) in data">
+				{{ name }}
+				<i>{{ value }}</i>
+			</li>
+		</ul>
+	</td>
+</tr>

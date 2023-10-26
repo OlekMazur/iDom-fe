@@ -1,7 +1,7 @@
 /*
  * This file is part of iDom-fe.
  *
- * Copyright (c) 2018, 2021, 2022 Aleksander Mazur
+ * Copyright (c) 2018, 2021, 2022, 2023 Aleksander Mazur
  *
  * iDom-fe is free software: you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -26,6 +26,7 @@ export type ISystemInfoBoolean = 0 | 1
 /*------------------------------------*/
 
 export interface ISystemInfo {
+	kernelVersion?: string
 	clock?: number		// epoch time [s]
 	uptime?: number		// s (fractional)
 	idletime?: number	// s (fractional)
@@ -120,6 +121,10 @@ export interface ISystemInfoServices {
 	[name: string]: ISystemInfoService
 }
 
+export interface ISystemInfoServiceStatus {
+	[name: string]: string
+}
+
 export interface ISystemInfoService {
 	normally_down?: ISystemInfoBoolean
 	elapsed?: number	// s
@@ -132,6 +137,8 @@ export interface ISystemInfoService {
 	mem_rss?: number	// KB
 	cpu_utime?: number	// s (fractional)
 	cpu_stime?: number	// s (fractional)
+	info?: ISystemInfoServiceStatus
+	status?: ISystemInfoServiceStatus
 }
 
 /*------------------------------------*/

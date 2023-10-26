@@ -42,7 +42,7 @@ along with iDom-fe. If not, see <https://www.gnu.org/licenses/>.
 						<label for="showAtOnce">Limit urządzeń</label>
 						<br/>
 						<OptionalNumber v-model="showAtOnce" id="showAtOnce"
-							minValue="1" maxValue="1000" defaultValue="10"
+							:minValue="1" :maxValue="1000" :defaultValue="10"
 							labelDel="Pokaż wszystko bez ograniczeń"
 							labelAdd="Ogranicz liczbę widocznych urządzeń"
 						/>
@@ -51,7 +51,7 @@ along with iDom-fe. If not, see <https://www.gnu.org/licenses/>.
 						<label for="historyAtOnce">Limit wpisów historii</label>
 						<br/>
 						<EditNumber v-model="historyAtOnce" id="historyAtOnce"
-							min="1" max="1000"
+							:min="1" :max="1000"
 						/>
 					</td>
 				</tr>

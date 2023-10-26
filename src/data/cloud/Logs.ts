@@ -1,7 +1,7 @@
 /*
  * This file is part of iDom-fe.
  *
- * Copyright (c) 2021 Aleksander Mazur
+ * Copyright (c) 2021, 2023 Aleksander Mazur
  *
  * iDom-fe is free software: you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -18,7 +18,7 @@
  */
 
 import { DataSnapshot, Query,
-	ref, query, orderByKey, onValue, off, set, child,
+	ref, query, orderByKey, onValue, off, set, child, limitToLast,
 } from 'firebase/database'
 import cloud, { database } from './Setup'
 import { ILogFile, TLogsListener } from '../API'
@@ -46,10 +46,12 @@ function cloudGetSnapLogs(snap: DataSnapshot | null): ILogFile[] {
 
 /*------------------------------------*/
 
-export function cloudLogsRegisterListener(place: string, listener: TLogsListener) {
-	//console.log('cloudLogsRegisterListener', place)
-	const q = query(ref(database, 'things/' + place + '/logs'), orderByKey())
-	//.limitToLast(limit)
+export function cloudLogsRegisterListener(place: string, listener: TLogsListener, limit?: number) {
+	//console.log('cloudLogsRegisterListener', place, limit)
+	const constraints = [orderByKey()]
+	if (limit)
+		constraints.push(limitToLast(limit))
+	const q = query(ref(database, 'things/' + place + '/logs'), ...constraints)
 	onValue(q, (snap: DataSnapshot | null) => {
 		listener(place, cloudGetSnapLogs(snap))
 	}, (e) => console.error(e))

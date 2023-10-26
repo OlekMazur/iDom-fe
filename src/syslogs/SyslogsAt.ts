@@ -1,7 +1,7 @@
 /*
  * This file is part of iDom-fe.
  *
- * Copyright (c) 2021 Aleksander Mazur
+ * Copyright (c) 2021, 2023 Aleksander Mazur
  *
  * iDom-fe is free software: you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -34,6 +34,7 @@ export default Vue.extend({
 	props: {
 		things: Object as () => IThings,
 		place: String as () => string,
+		showAtOnce: Number as () => number,
 	},
 	data: function() {
 		const syslogs: ILogFile[] = []
@@ -82,15 +83,27 @@ export default Vue.extend({
 		refresh: function(): void {
 			LogsForceSync(this.place)
 		},
+		register: function() {
+			this.query = LogsRegisterListener(this.place, this.logsCB, this.showAtOnce)
+			this.waiting = true
+		},
+		unregister: function() {
+			if (this.query) {
+				LogsUnregisterListener(this.query)
+				this.query = undefined
+			}
+		},
+	},
+	watch: {
+		showAtOnce: function(): void {
+			this.unregister()
+			this.register()
+		},
 	},
 	mounted: function() {
-		this.query = LogsRegisterListener(this.place, this.logsCB)
-		this.waiting = true
+		this.register()
 	},
 	destroyed: function() {
-		if (this.query) {
-			LogsUnregisterListener(this.query)
-			this.query = undefined
-		}
+		this.unregister()
 	},
 })

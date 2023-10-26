@@ -1,7 +1,7 @@
 /*
  * This file is part of iDom-fe.
  *
- * Copyright (c) 2021 Aleksander Mazur
+ * Copyright (c) 2021, 2023 Aleksander Mazur
  *
  * iDom-fe is free software: you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -20,21 +20,28 @@
 import template from './Syslogs.vue.js'
 import Vue from 'vue'
 import { IPlacesThings, getPermittedPlaces } from '../data/Things'
-import { storageLoadBool, storageSaveBool } from '../storage'
+import {
+	storageLoadBool, storageSaveBool,
+	storageLoadNumber, storageSaveNumber,
+	storageDelete,
+} from '../storage'
 import CollapseExpand from '../widgets/CollapseExpand'
+import OptionalNumber from '../widgets/OptionalNumber'
 import SyslogsAt from './SyslogsAt'
 
 export default Vue.extend({
 	...template,
-	components: { CollapseExpand, SyslogsAt },
+	components: { CollapseExpand, SyslogsAt, OptionalNumber },
 	props: {
 		placesThings: Object as () => IPlacesThings,
 	},
 	data: function() {
 		const show: { [place: string]: boolean } = {}
+		const showAtOnce = storageLoadNumber('syslogsShowAtOnce')
 
 		return {
 			show,
+			showAtOnce: isNaN(showAtOnce) ? undefined : showAtOnce,
 		}
 	},
 	computed: {
@@ -59,6 +66,13 @@ export default Vue.extend({
 						this.$set(this.show, place,
 							storageLoadBool('syslogs.place.' + place + '.show', place === ''))
 			},
+		},
+		showAtOnce: function(): void {
+			if (this.showAtOnce === undefined) {
+				storageDelete('syslogsShowAtOnce')
+			} else {
+				storageSaveNumber('syslogsShowAtOnce', this.showAtOnce)
+			}
 		},
 	},
 })

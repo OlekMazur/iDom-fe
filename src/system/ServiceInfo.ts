@@ -1,7 +1,7 @@
 /*
  * This file is part of iDom-fe.
  *
- * Copyright (c) 2018, 2019, 2023 Aleksander Mazur
+ * Copyright (c) 2023 Aleksander Mazur
  *
  * iDom-fe is free software: you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -17,30 +17,19 @@
  * along with iDom-fe. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import template from './Services.vue.js'
+import template from './ServiceInfo.vue.js'
 import Vue from 'vue'
-import { ISystemInfoServices } from '../data/System'
-import Service, { IServiceWithName } from './Service'
-import ServiceInfo from './ServiceInfo'
-
-function orderByElapsedAsc(a: IServiceWithName, b: IServiceWithName) {
-	return (a.elapsed || 0) - (b.elapsed || 0)
-}
+import { faInfo } from '@fortawesome/free-solid-svg-icons/faInfo'
+import { ISystemInfoServiceStatus } from '../data/System'
 
 export default Vue.extend({
 	...template,
-	components: { Service, ServiceInfo },
 	props: {
-		data: Object as () => ISystemInfoServices,
-		uptime: Number as () => number,
+		data: Object as () => ISystemInfoServiceStatus,
 	},
-	computed: {
-		items: function(): IServiceWithName[] {
-			const result: IServiceWithName[] = []
-			for (const name in this.data)
-				result.push({ name, ...this.data[name] })
-			result.sort(orderByElapsedAsc)
-			return result
-		},
+	data: function() {
+		return {
+			icon: faInfo,
+		}
 	},
 })

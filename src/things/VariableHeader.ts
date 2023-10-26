@@ -1,7 +1,7 @@
 /*
  * This file is part of iDom-fe.
  *
- * Copyright (c) 2018, 2019, 2022 Aleksander Mazur
+ * Copyright (c) 2018, 2019, 2022, 2023 Aleksander Mazur
  *
  * iDom-fe is free software: you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -58,6 +58,7 @@ const xlatVariableKey: { [key: string]: string } = {
 	'smart.8': 'Wydajność mechanizmu pozycjonowania dysku',
 	'smart.9': 'Licznik motogodzin dysku',
 	'smart.10': 'Liczba prób ponownego rozkręcenia dysku',
+	'smart.11': 'Liczba ponowionych prób rekalibracji',
 	'smart.12': 'Licznik włączeń/wyłączeń dysku',
 	'smart.160': 'Liczba nienaprawialnych sektorów przy odczycie/zapisie',	// Transcend
 	'smart.161': 'Liczba poprawnych bloków zapasowych',	// Transcend
@@ -71,6 +72,7 @@ const xlatVariableKey: { [key: string]: string } = {
 	'smart.188': 'Operacje dysku niedokończone w wymaganym czasie',
 	'smart.189': 'Błędy zapisu z powodu zbyt wysoko lecącej głowicy dysku',
 	'smart.190': '100°C - temperatura dysku',
+	'smart.191': 'Błędy czujnika wstrząsów',
 	'smart.192': 'Nagłe wyłączenia dysku',
 	'smart.193': 'Licznik parkowania głowic dysku',
 	'smart.194': 'Temperatura dysku',
@@ -82,8 +84,10 @@ const xlatVariableKey: { [key: string]: string } = {
 	'smart.200': 'Licznik błędów przy zapisie sektorów dysku',
 	'smart.201': 'Licznik błędów zgubienia ścieżki na dysku',
 	'smart.202': 'Licznik błędów znaczników adresu na dysku',
+	'smart.240': 'Czas spędzony na pozycjonowaniu głowic dysku',
 	'smart.241': 'Liczba zapisanych LBA',	// Transcend: raw*32MB
 	'smart.242': 'Liczba odczytanych LBA',	// Transcend: raw*32MB
+	'smart.254': 'Liczba swobodnych spadań',
 }
 
 xlatVariableKey[SYNC_TERMOSTAT_BIN] = 'Nastawy sterownika termostatycznego'

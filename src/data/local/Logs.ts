@@ -1,7 +1,7 @@
 /*
  * This file is part of iDom-fe.
  *
- * Copyright (c) 2021 Aleksander Mazur
+ * Copyright (c) 2021, 2023 Aleksander Mazur
  *
  * iDom-fe is free software: you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -23,10 +23,11 @@ import ProcessLogs from './ProcessLogs'
 
 /*------------------------------------*/
 
-function QueryLogs(): Promise<string> {
+function QueryLogs(limit?: number): Promise<string> {
 	//console.log('QueryLogs')
-	return QueryGet('/cgi-bin/syslogs')
-	.then((response) => {
+	return QueryGet('/cgi-bin/syslogs', limit ? {
+		limit,
+	} : undefined).then((response) => {
 		CheckResponse(response, 'text/csv')
 		return response.text()
 	})
@@ -39,33 +40,33 @@ interface ILogsQuery {
 	timeout?: number
 }
 
-function localRetryQueryLogs(query: ILogsQuery, place: string, listener: TLogsListener) {
-	query.timeout = window.setTimeout(() => localQueryLogs(query, place, listener), 10000)
+function localRetryQueryLogs(query: ILogsQuery, place: string, listener: TLogsListener, limit?: number) {
+	query.timeout = window.setTimeout(() => localQueryLogs(query, place, listener, limit), 10000)
 }
 
-function localQueryLogs(query: ILogsQuery, place: string, listener: TLogsListener) {
+function localQueryLogs(query: ILogsQuery, place: string, listener: TLogsListener, limit?: number) {
 	query.timeout = undefined
-	QueryLogs()
+	QueryLogs(limit)
 	.then(ProcessLogs)
 	.then((result: ILogFile[]) => {
 		if (query.active) {
 			listener(place, result)
-			localRetryQueryLogs(query, place, listener)
+			localRetryQueryLogs(query, place, listener, limit)
 		}
 	}).catch((e) => {
 		console.log('logs', e)
 		if (query.active)
-			localRetryQueryLogs(query, place, listener)
+			localRetryQueryLogs(query, place, listener, limit)
 	})
 }
 
 /*------------------------------------*/
 
-export function localLogsRegisterListener(place: string, listener: TLogsListener): ILogsQuery {
+export function localLogsRegisterListener(place: string, listener: TLogsListener, limit?: number): ILogsQuery {
 	const query: ILogsQuery = {
 		active: true,
 	}
-	localQueryLogs(query, place, listener)
+	localQueryLogs(query, place, listener, limit)
 	return query
 }
 

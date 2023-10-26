@@ -1,7 +1,7 @@
 /*
  * This file is part of iDom-fe.
  *
- * Copyright (c) 2019 Aleksander Mazur
+ * Copyright (c) 2019, 2023 Aleksander Mazur
  *
  * iDom-fe is free software: you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -20,9 +20,10 @@
 import { QueryGet, CheckResponse, QueryPostBinary, ExpectResponseEmpty } from '../Client'
 import { TERMOSTAT_BIN } from '../Things'
 
-export function LocalQueryTermos(): Promise<ArrayBuffer> {
-	return QueryGet(TERMOSTAT_BIN)
-	.then((response) => {
+export function LocalQueryTermos(cksum: string): Promise<ArrayBuffer> {
+	return QueryGet(TERMOSTAT_BIN, {
+		cksum,
+	}).then((response) => {
 		CheckResponse(response, 'application/octet-stream')
 		return response.arrayBuffer()
 	})

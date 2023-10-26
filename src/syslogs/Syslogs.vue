@@ -1,7 +1,7 @@
 <!--
 This file is part of iDom-fe.
 
-Copyright (c) 2021 Aleksander Mazur
+Copyright (c) 2021, 2023 Aleksander Mazur
 
 iDom-fe is free software: you can redistribute it and/or
 modify it under the terms of the GNU General Public License as
@@ -18,6 +18,23 @@ along with iDom-fe. If not, see <https://www.gnu.org/licenses/>.
 -->
 
 <div>
+	<div class="menu">
+		<table class="center">
+			<tbody>
+				<tr class="form-row">
+					<td class="form-col">
+						<label for="showAtOnce">Limit liczby dzienników</label>
+						<br/>
+						<OptionalNumber v-model="showAtOnce" id="showAtOnce"
+							:minValue="1" :maxValue="1000" :defaultValue="10"
+							labelDel="Pokaż wszystko bez ograniczeń"
+							labelAdd="Ogranicz liczbę widocznych dzienników"
+						/>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
 	<div v-for="place in places" :key="place">
 		<p v-if="place" class="center">
 			<span class="big bold">{{ place }} </span>
@@ -30,7 +47,7 @@ along with iDom-fe. If not, see <https://www.gnu.org/licenses/>.
 			v-if="show[place]"
 			:things="placesThings[place]"
 			:place="place"
+			:showAtOnce="showAtOnce"
 		/>
-		<hr />
 	</div>
 </div>

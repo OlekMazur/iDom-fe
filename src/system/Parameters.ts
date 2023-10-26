@@ -1,7 +1,7 @@
 /*
  * This file is part of iDom-fe.
  *
- * Copyright (c) 2018, 2019, 2022 Aleksander Mazur
+ * Copyright (c) 2018, 2019, 2022, 2023 Aleksander Mazur
  *
  * iDom-fe is free software: you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -27,6 +27,7 @@ import { faBolt } from '@fortawesome/free-solid-svg-icons/faBolt'
 import { faTachometerAlt } from '@fortawesome/free-solid-svg-icons/faTachometerAlt'
 import { faGlobe } from '@fortawesome/free-solid-svg-icons/faGlobe'
 import { faClock } from '@fortawesome/free-solid-svg-icons/faClock'
+import { faLinux } from '@fortawesome/free-brands-svg-icons/faLinux'
 import { ISystemInfo } from '../data/System'
 import { formatNumberWithUnit, formatElapsedTime, formatTS } from '../format'
 
@@ -55,6 +56,12 @@ export default Vue.extend({
 		params: function() {
 			const result: ISystemParameter[] = []
 			if (this.data) {
+				if (this.data.kernelVersion)
+					result.push({
+						label: 'Wersja oprogramowania',
+						icon: faLinux,
+						value: this.data.kernelVersion,
+					})
 				if (this.data.clock)
 					result.push({
 						label: 'Stan w chwili',

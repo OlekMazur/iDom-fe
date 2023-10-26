@@ -25,7 +25,7 @@ along with iDom-fe. If not, see <https://www.gnu.org/licenses/>.
 					<td class="form-col">
 						<label for="showAtOnce">Limit widocznych naraz</label>
 						<OptionalNumber v-model="showAtOnce" id="showAtOnce"
-							minValue="1" maxValue="1000" defaultValue="10"
+							:minValue="1" :maxValue="1000" :defaultValue="10"
 							labelDel="Pokaż wszystko bez ograniczeń"
 							labelAdd="Ogranicz liczbę widocznych urządzeń"
 						/>
