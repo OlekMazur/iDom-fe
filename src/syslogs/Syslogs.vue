@@ -1,7 +1,7 @@
 <!--
 This file is part of iDom-fe.
 
-Copyright (c) 2021, 2023 Aleksander Mazur
+Copyright (c) 2021, 2023, 2024 Aleksander Mazur
 
 iDom-fe is free software: you can redistribute it and/or
 modify it under the terms of the GNU General Public License as
@@ -37,7 +37,7 @@ along with iDom-fe. If not, see <https://www.gnu.org/licenses/>.
 	</div>
 	<div v-for="place in places" :key="place">
 		<p v-if="place" class="center">
-			<span class="big bold">{{ place }} </span>
+			<span class="big bold">{{ placesThings[place] && placesThings[place].alias }} </span>
 			<CollapseExpand
 				:state="show[place]"
 				@switch="showPlace(place, $event)"

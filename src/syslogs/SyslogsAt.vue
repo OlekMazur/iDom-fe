@@ -26,7 +26,7 @@ along with iDom-fe. If not, see <https://www.gnu.org/licenses/>.
 			<th class="center">Nazwa</th>
 			<th class="center">Rozmiar</th>
 			<th class="center">Przyczyna</th>
-			<th v-if="permissionToOrder" class="center" title="Zamówienie">
+			<th class="center" title="Zamówienie">
 				<font-awesome-icon :icon="faEnvelope" fixed-width />
 			</th>
 		</tr>
@@ -41,21 +41,17 @@ along with iDom-fe. If not, see <https://www.gnu.org/licenses/>.
 			v-for="syslog in syslogs"
 			:key="syslog.name"
 			:syslog="syslog"
+			:ordered="orderedLogs && orderedLogs[syslog.name]"
 			:permissionToOrder="permissionToOrder"
 			:place="place"
 		/>
 	</tbody>
 	<tfoot>
 		<tr>
-			<th colspan="2">{{ ts }}</th>
-			<th class="right">
+			<th colspan="2">{{ tsFormatted }}</th>
+			<th colspan="2" class="right">
 				<span v-if="refreshAvailable" title="Odśwież" class="button" @click="refresh()">
 					<font-awesome-icon :icon="faSync" fixed-width />
-				</span>
-			</th>
-			<th v-if="permissionToOrder">
-				<span v-if="getWakeUp()" title="Obudź" class="button" @click="wakeup()">
-					<font-awesome-icon :icon="faBell" fixed-width />
 				</span>
 			</th>
 		</tr>

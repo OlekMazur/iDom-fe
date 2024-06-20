@@ -25,7 +25,6 @@ along with iDom-fe. If not, see <https://www.gnu.org/licenses/>.
 		:showPlace="true"
 		:things="video.things"
 		:permissions="video.permissions"
-		:devices="video.devices"
 		:allPlay="allPlay"
 	/>
 </div>

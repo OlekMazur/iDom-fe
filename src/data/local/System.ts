@@ -17,7 +17,7 @@
  * along with iDom-fe. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { DataStatus } from '../API'
+import { DataStatus } from '../Provider'
 import { ISystemInfo, ISystemInfoListener } from '../System'
 import { PollingFetcher, IPollingListener } from './PollingFetcher'
 

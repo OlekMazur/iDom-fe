@@ -19,7 +19,7 @@
 
 import { QueryGet, CheckResponse } from '../Client'
 import { ILogFile, TLogsListener } from '../API'
-import ProcessLogs from './ProcessLogs'
+import ProcessLogs from '../csv/ProcessLogs'
 
 /*------------------------------------*/
 

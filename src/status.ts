@@ -1,7 +1,7 @@
 /*
  * This file is part of iDom-fe.
  *
- * Copyright (c) 2018, 2019 Aleksander Mazur
+ * Copyright (c) 2018, 2019, 2024 Aleksander Mazur
  *
  * iDom-fe is free software: you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -25,63 +25,44 @@ import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons/faExcla
 import { faUnlink } from '@fortawesome/free-solid-svg-icons/faUnlink'
 import { faLink } from '@fortawesome/free-solid-svg-icons/faLink'
 import { faSignInAlt } from '@fortawesome/free-solid-svg-icons/faSignInAlt'
-import { DataStatus } from './data/API'
-import cloud from './data/cloud/Setup'
+import { DataStatus } from './data/Provider'
 
-declare const VARIANT: string
+interface IStatusInfo {
+	icon: IconDefinition
+	blink?: boolean
+	pulse?: boolean
+}
+
+interface IStatusInfos {
+	[status: string]: IStatusInfo
+}
+
+const statusInfo: IStatusInfos = {
+	'ok': { icon: faLink },
+	'working': { icon: faSpinner, pulse: true },
+	'timeout': { icon: faUnlink, blink: true },
+	'error': { icon: faExclamationTriangle, blink: true },
+	'auth': { icon: faSignInAlt, blink: true },
+}
 
 export default Vue.extend({
 	...template,
 	props: {
 		status: String as () => DataStatus,
-		message: String,
+		title: String,
 	},
 	computed: {
-		icon: function(): IconDefinition | null {
-			if (this.status === 'ok')
-				return faLink
-			if (this.status === 'working')
-				return faSpinner
-			if (this.status === 'timeout')
-				return faUnlink
-			if (this.status === 'error')
-				return faExclamationTriangle
-			if (this.status === 'auth')
-				return faSignInAlt
-			return null
+		info: function(): IStatusInfo | undefined {
+			return statusInfo[this.status]
 		},
-		pulse: function(): boolean {
-			return this.status === 'working'
+		icon: function(): IconDefinition | undefined {
+			return this.info?.icon
+		},
+		pulse: function(): boolean | undefined {
+			return this.info?.pulse
 		},
 		style: function(): string {
-			return this.status === 'error' || this.status === 'timeout' || this.status === 'auth' ? 'blink' : ''
-		},
-		title: function(): string {
-			if (VARIANT === 'cloud') {
-				switch (this.status) {
-					case 'auth':
-						return 'Zaloguj'
-					case 'ok':
-					case 'working':
-						return 'Wyloguj'
-				}
-			}
-			return this.message
-		},
-	},
-	methods: {
-		click: function(): void {
-			if (VARIANT === 'cloud') {
-				switch (this.status) {
-					case 'auth':
-						cloud.signIn()
-						break
-					case 'ok':
-					case 'working':
-						cloud.signOut()
-						break
-				}
-			}
+			return this.info?.blink && 'blink' || ''
 		},
 	},
 })

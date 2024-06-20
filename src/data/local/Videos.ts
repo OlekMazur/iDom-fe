@@ -1,7 +1,7 @@
 /*
  * This file is part of iDom-fe.
  *
- * Copyright (c) 2018 Aleksander Mazur
+ * Copyright (c) 2018, 2024 Aleksander Mazur
  *
  * iDom-fe is free software: you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -20,7 +20,7 @@
 import { QueryGet, CheckResponse } from '../Client'
 import { TVideosListener } from '../API'
 import { IVideo } from '../Video'
-import ProcessVideos from './ProcessVideos'
+import ProcessVideos from '../csv/ProcessVideos'
 import { formatNumberLeadingZeros } from '../../format'
 
 /*------------------------------------*/
@@ -52,7 +52,7 @@ function localRetryQueryVideos(query: IVideoQuery, place: string, min: number, m
 function localQueryVideos(query: IVideoQuery, place: string, min: number, max: number, listener: TVideosListener) {
 	query.timeout = undefined
 	QueryVideos(min, max)
-	.then(ProcessVideos)
+	.then((csv) => ProcessVideos(csv, 'video/'))
 	.then((result: IVideo[]) => {
 		const latest = result.find((video: IVideo) => video.no === max)
 		if (query.active)

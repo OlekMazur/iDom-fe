@@ -19,24 +19,24 @@ along with iDom-fe. If not, see <https://www.gnu.org/licenses/>.
 
 <tr>
 	<td class="right">{{ index }}</td>
-	<td class="min-width">{{ formatTS(entry.ts) }}</td>
+	<td class="min-width">{{ ts }}</td>
 	<td class="min-width">
-		<template v-if="entry.on !== undefined">
-			{{ formatElapsedTime(entry.on) }}
+		<template v-if="elapsedOn !== undefined">
+			{{ elapsedOn }}
 			<ButtonDelete v-if="entry.on < deletableShorterThan" @click="$emit('deleteOnTime')"
 				title="Usuń błędnie zgłoszony (w rzeczywistości nie mający miejsca) okres działania"
 			/>
 		</template>
 	</td>
-	<td class="min-width center bold">{{ entry.on !== undefined && entry.total !== undefined ? formatNumberWithUnit(100 * entry.on / entry.total, '%') : '' }}</td>
+	<td class="min-width center bold">{{ percentOn }}</td>
 	<td class="min-width">
-		<template v-if="entry.off !== undefined">
-			{{ formatElapsedTime(entry.off) }}
+		<template v-if="elapsedOff !== undefined">
+			{{ elapsedOff }}
 			<ButtonDelete v-if="entry.off < deletableShorterThan" @click="$emit('deleteOffTime')"
 				title="Usuń błędnie zgłoszoną (w rzeczywistości nie mającą miejsca) przerwę w działaniu"
 			/>
 		</template>
 	</td>
-	<td class="min-width center">{{ entry.off !== undefined && entry.total !== undefined ? formatNumberWithUnit(100 * entry.off / entry.total, '%') : '' }}</td>
-	<td class="min-width">{{ entry.total !== undefined ? formatElapsedTime(entry.total) : '' }}</td>
+	<td class="min-width center">{{ percentOff }}</td>
+	<td class="min-width">{{ elapsedTotal }}</td>
 </tr>

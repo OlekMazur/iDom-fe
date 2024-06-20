@@ -34,18 +34,27 @@ export default Vue.extend({
 		device: String as () => string,	// type/globalID e.g. devices/place.ID
 		deletableShorterThan: Number as () => number,
 	},
-	data: function() {
-		return {
-			formatElapsedTime,
-			formatNumberWithUnit,
-		}
-	},
 	computed: {
 		cycles: function(): IDeviceCycle[] {
 			return deviceHistoryToCycles(this.history).reverse()
 		},
 		summary: function(): IDeviceCycleSummary | undefined {
 			return deviceCyclesSummary(this.cycles)
+		},
+		summaryOn: function(): string {
+			return this.summary?.on !== undefined ? formatElapsedTime(this.summary.on) : ''
+		},
+		percentOn: function(): string {
+			return this.summary?.on !== undefined && this.summary?.total !== undefined ? formatNumberWithUnit(100 * this.summary.on / this.summary.total, '%') : ''
+		},
+		summaryOff: function(): string {
+			return this.summary?.off !== undefined ? formatElapsedTime(this.summary.off) : ''
+		},
+		percentOff: function(): string {
+			return this.summary?.off !== undefined && this.summary?.total !== undefined ? formatNumberWithUnit(100 * this.summary.off / this.summary.total, '%') : ''
+		},
+		elapsedTotal: function(): string {
+			return this.summary?.total !== undefined ? formatElapsedTime(this.summary.total) : ''
 		},
 	},
 	methods: {

@@ -1,7 +1,7 @@
 /*
  * This file is part of iDom-fe.
  *
- * Copyright (c) 2019 Aleksander Mazur
+ * Copyright (c) 2019, 2024 Aleksander Mazur
  *
  * iDom-fe is free software: you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -25,12 +25,13 @@ export default Vue.extend({
 	...template,
 	props: {
 		ts: Number as () => number,
-		baseTS: Number as () => number,
-		timeout: Number as () => number,
+		baseTS: Number as () => number | undefined,
+		timeout: Number as () => number | undefined,
+		normal: Boolean as () => boolean | undefined,
 	},
 	computed: {
 		old: function(): boolean {
-			return this.baseTS - this.ts > this.timeout
+			return !this.timeout || typeof this.baseTS !== 'number' || this.baseTS - this.ts > this.timeout
 		},
 		dt: function(): Date {
 			return new Date(this.ts * 1000)
@@ -39,12 +40,16 @@ export default Vue.extend({
 			if (!this.old)
 				return ''
 			const now = new Date()
-			return this.dt.getDate() !== now.getDate() ||
-				this.dt.getMonth() !== now.getMonth() ||
-				this.dt.getFullYear() !== now.getFullYear() ? formatDate(this.dt) : ''
+			if (this.dt.getDate() == now.getDate() &&
+				this.dt.getMonth() == now.getMonth() &&
+				this.dt.getFullYear() == now.getFullYear())
+				return ''
+			return formatDate(this.dt)
 		},
 		line2: function(): string {
-			return this.old ? formatTime(this.dt) : ''
+			if (!this.old)
+				return ''
+			return formatTime(this.dt)
 		},
 	},
 })

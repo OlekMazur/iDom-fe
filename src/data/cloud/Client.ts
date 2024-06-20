@@ -1,7 +1,7 @@
 /*
  * This file is part of iDom-fe.
  *
- * Copyright (c) 2019, 2020, 2021, 2023 Aleksander Mazur
+ * Copyright (c) 2019, 2020, 2021, 2023, 2024 Aleksander Mazur
  *
  * iDom-fe is free software: you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -28,14 +28,6 @@ const commonFetchOptions: RequestInit = {
 	keepalive: true,
 }
 
-/*
-function cloudFileDBRef(fn: string) {
-	if (fn.indexOf('/') >= 0)
-		throw new Error('Nieprawidłowa nazwa pliku: ' + fn)
-	return encodeURIComponent(fn).replace(/\./g, '%2E')
-}
-*/
-
 function cloudFileStorageRef(fn: string, cksum: string) {
 	if (fn.indexOf('/') >= 0)
 		throw new Error('Nieprawidłowa nazwa pliku: ' + fn)
@@ -61,13 +53,12 @@ export function cloudUploadFile(place: string, fn: string, data: ArrayBuffer, va
 		console.log('cksum:', cksum)
 		const file = cloudFileStorageRef(fn, cksum)
 		return getMetadata(file)
-		//.then(() => {})	// promise fulfills if file exists
 		.catch(() => uploadBytes(file, data, {
 			contentType: 'application/octet-stream',
 			cacheControl: 'private, max-age=31536000',
 		})).then(() => {
 			if (variableID)
-				return set(ref(database, `things/${place}/now/variables/${variableID}/want`), cksum)
+				return set(ref(database, `things/${place}/req/g/v/${variableID}`), cksum)
 		})
 	})
 }

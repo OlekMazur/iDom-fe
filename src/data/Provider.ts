@@ -17,9 +17,17 @@
  * along with iDom-fe. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { IDataProvider } from './API'
+export type DataStatus = 'unknown' | 'auth' | 'working' | 'ok' | 'timeout' | 'error'
 
-/*------------------------------------*/
+export interface IDataListener {
+	statusChanged: (status: DataStatus, message?: string) => void
+}
+
+export interface IDataProvider {
+	start: () => void
+	stop: () => void
+	action: () => void
+}
 
 export class DataProvider implements IDataProvider {
 	protected active = false
@@ -35,6 +43,10 @@ export class DataProvider implements IDataProvider {
 			throw new Error('Już zatrzymany')
 		this.active = false
 	}
-}
 
-/*------------------------------------*/
+	/** Default action: restart provider. Don't call this from overridden method. */
+	public action() {
+		this.stop()
+		this.start()
+	}
+}

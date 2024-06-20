@@ -1,7 +1,7 @@
 /*
  * This file is part of iDom-fe.
  *
- * Copyright (c) 2019, 2021, 2022 Aleksander Mazur
+ * Copyright (c) 2019, 2021, 2022, 2024 Aleksander Mazur
  *
  * iDom-fe is free software: you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -38,6 +38,7 @@ export interface INeighbourDevice {
 	props: INeighbourProps
 	thing: INeighbour
 	place: string
+	alias?: string	// alias of the place
 	id: string
 	baseTS: number
 	icon: IconDefinition
@@ -61,16 +62,17 @@ interface IExcludedTypes {
 function neighbourUpdate(
 	nd: INeighbourDevice,
 	place: string,
+	alias: string | undefined,
 	id: string,
 	thing: INeighbour,
 	baseTS: number,
 	permissions?: IPermissions,
 ): void {
-
 	nd.idAt[place] = id
 
 	if (nd.thing.ts < thing.ts) {
 		nd.place = place
+		nd.alias = alias
 		nd.id = id
 		nd.thing = thing
 		nd.baseTS = baseTS
@@ -101,13 +103,14 @@ function getNeighboursFrom(
 	const things = placesThings[place]
 	if (!things || !things.neighbours)
 		return
+	const alias = placesThings[place]?.alias
 	for (const id in things.neighbours) {
 		const thing = things.neighbours[id]
 		const name = thing.name
 		if (!name)
 			continue
 		if (excludedTypes) {
-			const type = name.split('/', 2)[0]
+			const type = name.split('/', 1)[0]
 			if (excludedTypes[type])
 				continue
 		}
@@ -117,12 +120,13 @@ function getNeighboursFrom(
 				idAt: {},
 				thing,
 				place,
+				alias,
 				id,
 				baseTS: things.ts,
 				icon: getNeighbourIcon(thing),
 				permissions: things.permissions,
 			}
-		neighbourUpdate(result[name], place, id, thing, things.ts, things.permissions)
+		neighbourUpdate(result[name], place, alias, id, thing, things.ts, things.permissions)
 	}
 }
 

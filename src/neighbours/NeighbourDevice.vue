@@ -1,7 +1,7 @@
 <!--
 This file is part of iDom-fe.
 
-Copyright (c) 2018, 2019, 2021 Aleksander Mazur
+Copyright (c) 2018, 2019, 2021, 2024 Aleksander Mazur
 
 iDom-fe is free software: you can redistribute it and/or
 modify it under the terms of the GNU General Public License as
@@ -24,11 +24,11 @@ along with iDom-fe. If not, see <https://www.gnu.org/licenses/>.
 			<font-awesome-icon :icon="nd.thing.state ? iconOn : iconOff" :title="nd.thing.state ? 'Widoczne' : 'Znikło'" fixed-width />
 		</div>
 		<Timestamp :ts="nd.thing.ts" :baseTS="nd.baseTS" :timeout="timeout" />
-		<div class="bold">{{ nd.place }}</div>
+		<div class="bold">{{ nd.alias }}</div>
 	</td>
 	<td>
 		<div>
-			<SensorDeviceForm type="neighbours" :place="nd.place" :id="nd.id" :thing="nd.thing" :permissions="nd.permissions" />
+			<SensorDeviceForm type="neighbours" :place="nd.place" :alias="nd.alias" :id="nd.id" :thing="nd.thing" :permissions="nd.permissions" />
 		</div>
 		<div v-if="nd.props.hasOwnProperty('name')" class="bold">{{ nd.props.name.value }}</div>
 		<div v-if="clsStr">{{ clsStr }}</div>

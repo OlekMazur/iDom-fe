@@ -1,7 +1,7 @@
 /*
  * This file is part of iDom-fe.
  *
- * Copyright (c) 2018, 2019 Aleksander Mazur
+ * Copyright (c) 2018, 2019, 2021, 2024 Aleksander Mazur
  *
  * iDom-fe is free software: you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -25,13 +25,12 @@ import { faEnvelope } from '@fortawesome/free-solid-svg-icons/faEnvelope'
 import { faPlus } from '@fortawesome/free-solid-svg-icons/faPlus'
 import { faHandPaper } from '@fortawesome/free-solid-svg-icons/faHandPaper'
 import { faSpinner } from '@fortawesome/free-solid-svg-icons/faSpinner'
-import { faBell } from '@fortawesome/free-solid-svg-icons/faBell'
 import { IVideo } from '../data/Video'
-import { IThings, IPermissions, IDevices, getWakeUpSession } from '../data/Things'
+import { IThings, IPermissions } from '../data/Things'
 import { storageLoadBool } from '../storage'
 import { VIDEO_WANT_TN } from '../config'
 import { formatTS, formatNumberWithUnit } from '../format'
-import { getVideoTNURL, getVideoURL, orderVideo, orderVideoTNUpTo, wakeup } from '../data/API'
+import { getVideoTNURL, getVideoURL, orderVideo, orderVideoTNUpTo } from '../data/API'
 import { DrawImageOnCanvas } from './FrameCanvas'
 import EditNumber from '../widgets/EditNumber'
 
@@ -41,10 +40,9 @@ export default Vue.extend({
 	props: {
 		place: String as () => string,
 		showPlace: Boolean as () => boolean,
-		things: Object as () => IThings | null | undefined,
-		permissions: Object as () => IPermissions | null | undefined,
+		things: Object as () => IThings | undefined,
+		permissions: Object as () => IPermissions | undefined,
 		video: Object as () => IVideo,
-		devices: Object as () => IDevices,
 		allPlay: Boolean as () => boolean,
 	},
 	data: function() {
@@ -55,7 +53,6 @@ export default Vue.extend({
 			faEnvelope,
 			faPlus,
 			faSpinner,
-			faBell,
 
 			frame: undefined as undefined | number,
 			imgURL: '',
@@ -76,9 +73,15 @@ export default Vue.extend({
 		url: function(): string {
 			return this.video.ext ? getVideoURL(this.place, this.video.no, this.video.ext) : ''
 		},
+		where: function(): string {
+			if (!this.showPlace)
+				return ''
+			const alias = this.things && this.things.alias || this.place
+			return alias && ' @' + alias || ''
+		},
 		cam: function(): string {
-			const cam = this.devices ? this.devices['video/' + this.video.cam] : undefined
-			return (cam && cam.alias || this.video.cam || '') + (this.showPlace && this.place ? ' @' + this.place : '')
+			const cam = this.things && this.things.devices && this.video.cam && this.things.devices[this.video.cam] || undefined
+			return (cam && cam.alias || this.video.cam || '') + this.where
 		},
 		boost: function(): boolean {
 			return storageLoadBool('videoBoost.' + this.place + '.' + this.video.cam, true)
@@ -185,11 +188,14 @@ export default Vue.extend({
 		clickURL: function(e: Event): void {
 			if (!this.url) {
 				e.preventDefault()
-				orderVideo(this.place, this.video.no, true)
+				if (this.video && confirm('Czy na pewno zamówić wysyłkę nagrania '
+					+ this.video.no + '.' + this.video.ext
+					+ ' o wielkości ' + this.video.size + ' B?'))
+					orderVideo(this.place, this.video, true)
 			}
 		},
 		cancelOrder: function(): void {
-			orderVideo(this.place, this.video.no, false)
+			orderVideo(this.place, this.video, false)
 		},
 		setWantTN: function(wantTN: boolean): void {
 			let arg: number | undefined
@@ -198,15 +204,7 @@ export default Vue.extend({
 				if (this.video.hasTN !== undefined)
 					arg += this.video.hasTN
 			}
-			orderVideoTNUpTo(this.place, this.video.no, arg)
-		},
-		getWakeUp: function(): string | undefined {
-			return getWakeUpSession(this.things)
-		},
-		wakeup: function(): void {
-			const session = this.getWakeUp()
-			if (session)
-				wakeup(session)
+			orderVideoTNUpTo(this.place, this.video, arg)
 		},
 	},
 	destroyed: function() {

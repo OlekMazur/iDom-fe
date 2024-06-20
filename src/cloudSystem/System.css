@@ -1,7 +1,7 @@
 /*
  * This file is part of iDom-fe.
  *
- * Copyright (c) 2018, 2019 Aleksander Mazur
+ * Copyright (c) 2024 Aleksander Mazur
  *
  * iDom-fe is free software: you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -17,13 +17,9 @@
  * along with iDom-fe. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import template from './RequestData.vue.js'
-import Vue from 'vue'
+/* ---------------------------------- */
 
-export default Vue.extend({
-	...template,
-	name: 'RequestData',
-	props: {
-		data: Object as () => object,
-	},
-})
+ul.list-none {
+	list-style-type: none;
+	padding: 0;
+}

@@ -1,7 +1,7 @@
 /*
  * This file is part of iDom-fe.
  *
- * Copyright (c) 2018, 2019 Aleksander Mazur
+ * Copyright (c) 2018, 2019, 2021, 2024 Aleksander Mazur
  *
  * iDom-fe is free software: you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -71,5 +71,11 @@ export function localSendSMS(to: string, content: string): Promise<void> {
 	return QueryPost('/cgi-bin/sms', {
 		to,
 		content,
+	}).then(ExpectResponseEmpty)
+}
+
+export function localPurgeMessages(group: string): Promise<void> {
+	return QueryPost('/cgi-bin/msg-purge', {
+		group,
 	}).then(ExpectResponseEmpty)
 }

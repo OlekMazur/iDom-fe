@@ -1,7 +1,7 @@
 /*
  * This file is part of iDom-fe.
  *
- * Copyright (c) 2018, 2019, 2020, 2021, 2022, 2023 Aleksander Mazur
+ * Copyright (c) 2018, 2019, 2020, 2021, 2022, 2023, 2024 Aleksander Mazur
  *
  * iDom-fe is free software: you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -20,9 +20,9 @@
 import { TThingType,
 	IThingsListener,
 	IBaseNamedThingsWithAlias, IBaseNamedThingWithAlias,
-	IVariables, IVariable,
 	VAR_SYNC_PREFIX,
 } from './Things'
+import { IDataProvider } from './Provider'
 import { LocalThingsProvider } from './local/Things'
 import { CloudThingsProvider } from './cloud/Things'
 import { API1ThingsProvider } from './api1/Things'
@@ -32,22 +32,26 @@ import { IAudiosListener } from './Audio'
 import { LocalAudiosProvider } from './local/Audio'
 import { IVideo } from './Video'
 import { localVideosRegisterListener, localVideosUnregisterListener,
-	getLocalVideoTNURL, getLocalVideoURL } from './local/Videos'
+	getLocalVideoTNURL, getLocalVideoURL,
+} from './local/Videos'
 import {
 	cloudVideosRegisterListener, cloudVideosUnregisterListener,
 	cloudNewestVideosRegisterListener, cloudNewestVideosUnregisterListener,
-	getCloudVideoTNURL, cloudOrderVideo, cloudOrderVideoTNUpTo } from './cloud/Videos'
-import { LocalErrorMessage } from './local/Client'
-import { localSwitchDevice, localRenameThing, localRemoveThing, localSendUSSD, localSendSMS } from './local/Operations'
+	getCloudVideoTNURL, cloudOrderVideo, cloudOrderVideoTNUpTo,
+} from './cloud/Videos'
 import {
-	cloudSwitchDevice,
-	cloudSetThingColor,
-	cloudWakeUp,
-	cloudSendUSSD,
-	cloudSendSMS,
-	cloudOrderGeneric,
-	cloudRenameThing,
-	cloudRemoveThing,
+	api1VideosRegisterListener, api1VideosUnregisterListener,
+	api1NewestVideosRegisterListener, api1NewestVideosUnregisterListener,
+	getApi1VideoTNURL, api1OrderVideo, api1OrderVideoTNUpTo,
+} from './api1/Videos'
+import { LocalErrorMessage } from './local/Client'
+import {
+	localSwitchDevice, localRenameThing, localRemoveThing,
+	localSendUSSD, localSendSMS, localPurgeMessages,
+} from './local/Operations'
+import {
+	cloudSwitchDevice, cloudRenameThing, cloudSetThingColor, cloudWakeUp,
+	cloudSendUSSD, cloudSendSMS, cloudPurgeMessages,
 } from './cloud/Operations'
 import { LocalQueryTermos, LocalPostTermos } from './local/Termos'
 import { CloudQueryTermos, CloudPostTermos } from './cloud/Termos'
@@ -79,17 +83,6 @@ import { getCloudSyncVarURL } from './cloud/SyncVars'
 
 /*------------------------------------*/
 
-export type DataStatus = 'unknown' | 'auth' | 'working' | 'ok' | 'timeout' | 'error'
-
-export interface IDataListener {
-	statusChanged: (status: DataStatus, message?: string) => void
-}
-
-export interface IDataProvider {
-	start: () => void
-	stop: () => void
-}
-
 declare const VARIANT: string
 
 function newOperationUnsupported() {
@@ -99,18 +92,6 @@ function newOperationUnsupported() {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function OperationUnsupported(): Promise<any> {
 	return Promise.reject(newOperationUnsupported())
-}
-
-/** A potentially cached URL. */
-export interface ICachedURL {
-	/** The URL itself. */
-	url: string
-	/**
-	 * Whether the [[url]] comes from the cache (true) or not (false).
-	 *
-	 * If true, it might make sense to try once more with increased tryIdx.
-	 */
-	cached: boolean
 }
 
 /*------------------------------------*/
@@ -149,6 +130,8 @@ export function VideosRegisterListener(place: string, min: number, max: number, 
 		return localVideosRegisterListener(place, min, max, listener)
 	if (VARIANT === 'cloud')
 		return cloudVideosRegisterListener(place, min, max, listener)
+	if (VARIANT === 'api1')
+		return api1VideosRegisterListener(place, min, max, listener)
 	throw newOperationUnsupported()
 }
 
@@ -158,12 +141,16 @@ export function VideosUnregisterListener(query: any) {
 		return localVideosUnregisterListener(query)
 	if (VARIANT === 'cloud')
 		return cloudVideosUnregisterListener(query)
+	if (VARIANT === 'api1')
+		return api1VideosUnregisterListener(query)
 	throw newOperationUnsupported()
 }
 
 export function NewestVideosRegisterListener(place: string, limit: number, listener: TVideosListener) {
 	if (VARIANT === 'cloud')
 		return cloudNewestVideosRegisterListener(place, limit, listener)
+	if (VARIANT === 'api1')
+		return api1NewestVideosRegisterListener(place, limit, listener)
 	throw newOperationUnsupported()
 }
 
@@ -171,6 +158,8 @@ export function NewestVideosRegisterListener(place: string, limit: number, liste
 export function NewestVideosUnregisterListener(query: any) {
 	if (VARIANT === 'cloud')
 		return cloudNewestVideosUnregisterListener(query)
+	if (VARIANT === 'api1')
+		return api1NewestVideosUnregisterListener(query)
 	throw newOperationUnsupported()
 }
 
@@ -207,8 +196,6 @@ export function OperationRenameThing(place: string, type: TThingType, id: string
 export function OperationRemoveThing(place: string, type: TThingType, id: string): Promise<void> {
 	if (VARIANT === 'local')
 		return localRemoveThing(place, type, id)
-	if (VARIANT === 'cloud')
-		return cloudRemoveThing(place, type, id)
 	return OperationUnsupported()
 }
 
@@ -238,20 +225,6 @@ function transformPropertyIDs<T extends object>(object: { [id: string]: T }, fie
 }
 
 /**
- * Transforms given variables so that the resulting object
- * has keys equal to variables[id].key (keys becomes ids).
- */
-export function getVariablesIndexedByKey(variables: IVariables | null | undefined): IVariables {
-	if (!variables)
-		return {}
-	if (VARIANT === 'local')	// nothing to do, local provider uses no other keys
-		return variables
-	if (VARIANT === 'cloud')
-		return transformPropertyIDs<IVariable>(variables, 'key')
-	throw new Error(VARIANT)
-}
-
-/**
  * Transforms given devices so that the resulting object
  * has keys equal to devices[id].name (names become ids).
  */
@@ -262,23 +235,8 @@ export function getThingsIndexedByName(things: IBaseNamedThingsWithAlias | null 
 		return {}
 	if (VARIANT === 'local')	// nothing to do, local provider uses no other names
 		return things
-	if (VARIANT === 'cloud')
+	else
 		return transformPropertyIDs<IBaseNamedThingWithAlias>(things, 'name')
-	throw new Error(VARIANT)
-}
-
-export function getVariableIDByKey(variables: IVariables | null | undefined, key: string): string | undefined {
-	if (!variables)
-		return undefined
-	if (VARIANT === 'local')	// nothing to do, local provider uses no other keys
-		return key
-	if (VARIANT === 'cloud') {
-		for (const id in variables)
-			if (variables[id].key === key)
-				return id
-		return undefined
-	}
-	throw new Error(VARIANT)
 }
 
 /*------------------------------------*/
@@ -288,6 +246,8 @@ export function getVideoTNURL(place: string, no: number, frame: number): string 
 		return getLocalVideoTNURL(no, frame)
 	if (VARIANT === 'cloud')
 		return getCloudVideoTNURL(place, no, frame)
+	if (VARIANT === 'api1')
+		return getApi1VideoTNURL(place, no, frame)
 	return ''
 }
 
@@ -304,13 +264,15 @@ export function getVideoURL(place: string, no: number, ext: string): string {
  * sends the video directly to user's e-mail.
  *
  * @param place Place which holds the video.
- * @param no Number of the video.
+ * @param video Video to order.
  * @param order true if the video should be ordered, false if the order should be cancelled.
  * @return A promise to order a video or cancel the order.
  */
-export function orderVideo(place: string, no: number, order: boolean): Promise<void> {
+export function orderVideo(place: string, video: IVideo, order: boolean): Promise<void> {
 	if (VARIANT === 'cloud')
-		return cloudOrderVideo(place, no, order)
+		return cloudOrderVideo(place, video, order)
+	if (VARIANT === 'api1')
+		return api1OrderVideo(place, video, order)
 	return OperationUnsupported()
 }
 
@@ -321,28 +283,29 @@ export function orderVideo(place: string, no: number, order: boolean): Promise<v
  * uploads frames (thumbnails) beyond "hasTN" up to and including given "wantTN".
  *
  * @param place Place which holds the video.
- * @param no Number of the video.
+ * @param video Video to order.
  * @param wantTN Maximum index of frame (thumbnail) which should be made available,
  * or undefined if uploading subsequent thumbnails should be cancelled.
  * @return A promise to order subsequent thumbnails or cancel the order.
  */
-export function orderVideoTNUpTo(place: string, no: number, wantTN?: number): Promise<void> {
+export function orderVideoTNUpTo(place: string, video: IVideo, wantTN?: number): Promise<void> {
 	if (VARIANT === 'cloud')
-		return cloudOrderVideoTNUpTo(place, no, wantTN)
+		return cloudOrderVideoTNUpTo(place, video, wantTN)
+	if (VARIANT === 'api1')
+		return api1OrderVideoTNUpTo(place, video, wantTN)
 	return OperationUnsupported()
 }
 
 /*------------------------------------*/
 
 /**
- * Wakes up client/terminal at a place associated with given wake up session.
+ * Wakes up client/terminal at a given place.
  *
- * @param session Wake up session = value of things.request.wakeup property
- *                passed to IThingsListener.thingsChanged.
+ * @param up false cancels wake up order.
  */
-export function wakeup(session: string): Promise<void> {
+export function wakeup(place: string): Promise<void> {
 	if (VARIANT === 'cloud')
-		return cloudWakeUp(session)
+		return cloudWakeUp(place)
 	return OperationUnsupported()
 }
 
@@ -356,11 +319,11 @@ export function queryTermos(place: string, cksum: string): Promise<ArrayBuffer> 
 	return OperationUnsupported()
 }
 
-export function postTermos(place: string, variableID: string, data: ArrayBuffer): Promise<void> {
+export function postTermos(place: string, variableID: string | undefined, data: ArrayBuffer): Promise<void> {
 	if (VARIANT === 'local')
 		return LocalPostTermos(data)
 	if (VARIANT === 'cloud')
-		return CloudPostTermos(place, variableID, data)
+		return variableID ? CloudPostTermos(place, variableID, data) : Promise.reject('Najpierw terminal musi wgrać stary program')
 	return OperationUnsupported()
 }
 
@@ -462,9 +425,11 @@ export function sendSMS(place: string, to: string, content: string): Promise<voi
 	return OperationUnsupported()
 }
 
-export function cancelOrderUSSDorSMS(place: string, what: 'ussd' | 'sms'): Promise<void> {
+export function purgeMessages(place: string, group: string): Promise<void> {
+	if (VARIANT === 'local')
+		return localPurgeMessages(group)
 	if (VARIANT === 'cloud')
-		return cloudOrderGeneric(place, what, false)
+		return cloudPurgeMessages(place, group)
 	return OperationUnsupported()
 }
 
@@ -501,7 +466,7 @@ export interface ILogFile {
 	order?: boolean
 }
 
-export type TLogsListener = (place: string, logs: ILogFile[]) => void
+export type TLogsListener = (place: string, logs: ILogFile[], ts?: number) => void
 
 export function LogsRegisterListener(place: string, listener: TLogsListener, limit?: number) {
 	if (VARIANT === 'local')

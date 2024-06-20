@@ -1,7 +1,7 @@
 /*
  * This file is part of iDom-fe.
  *
- * Copyright (c) 2018 Aleksander Mazur
+ * Copyright (c) 2018, 2024 Aleksander Mazur
  *
  * iDom-fe is free software: you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -23,6 +23,10 @@ import { IVideo } from '../Video'
 class VideosProcessor extends CSVProcessor<IVideo[]> {
 
 	private cam: string[] = []
+
+	constructor(private camPrefix: string = '') {
+		super()
+	}
 
 	protected readonly initialize = (): IVideo[] => {
 		return []
@@ -60,17 +64,21 @@ class VideosProcessor extends CSVProcessor<IVideo[]> {
 			size: this.convertInteger(line[2]),
 			ts: this.convertInteger(line[3]),
 		}
-		if (line.length >= 5) {
+		if (line[4]) {
 			const camIdx = this.convertInteger(line[4])
 			if (camIdx >= this.cam.length)
 				throw this.error(103, line)
-			video.cam = this.cam[camIdx]
+			video.cam = this.camPrefix + this.cam[camIdx]
 		}
+		if (line[5])
+			video.hasTN = this.convertInteger(line[5])
+		if (line[6])
+			video.wantTN = this.convertInteger(line[6])
 		this.result.push(video)
 	}
 }
 
-export default function ProcessVideos(csv: string): IVideo[] {
-	const processor = new VideosProcessor()
+export default function ProcessVideos(csv: string, camPrefix?: string): IVideo[] {
+	const processor = new VideosProcessor(camPrefix)
 	return processor.process(csv)
 }

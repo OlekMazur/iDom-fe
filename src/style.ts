@@ -1,7 +1,7 @@
 /*
  * This file is part of iDom-fe.
  *
- * Copyright (c) 2018, 2019, 2020, 2021, 2023 Aleksander Mazur
+ * Copyright (c) 2018, 2019, 2020, 2021, 2023, 2024 Aleksander Mazur
  *
  * iDom-fe is free software: you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -50,9 +50,11 @@ import { faInfo } from '@fortawesome/free-solid-svg-icons/faInfo'
 import { faFileAlt } from '@fortawesome/free-solid-svg-icons/faFileAlt'
 import { faSlidersH } from '@fortawesome/free-solid-svg-icons/faSlidersH'
 import { faFilm } from '@fortawesome/free-solid-svg-icons/faFilm'
+import { faClock } from '@fortawesome/free-solid-svg-icons/faClock'
 
 import { faBluetooth } from '@fortawesome/free-brands-svg-icons/faBluetooth'
 import { faUserSecret } from '@fortawesome/free-solid-svg-icons/faUserSecret'
+import { faWifi } from '@fortawesome/free-solid-svg-icons/faWifi'
 
 /**************************************/
 
@@ -68,13 +70,22 @@ export function getSensorIcon(sensor: ISensor): IconDefinition {
 }
 
 export function getDeviceIcon(device: IDevice): IconDefinition {
-	if (device.name)
-		switch (device.name.split('/')[0]) {
+	if (device.name) {
+		const splitted = device.name.split('/', 2)
+		switch (splitted[0]) {
 			case 'termostat':
 				return faExclamation
 			case 'video':
 				return faVideo
+			case 'conf':
+				switch (splitted[1]) {
+					case 'bluetooth':
+						return faBluetooth
+					case 'hostap':
+						return faWifi
+				}
 		}
+	}
 	if (device.alias) {
 		const aliasLC = device.alias.toLowerCase()
 		if (aliasLC.includes('piszcz'))
@@ -103,7 +114,11 @@ export function getVariableIcon(variable: IVariable): IconDefinition {
 			return faUsb
 		case 'sys.version':
 			return faLinux
+		case 'sys.next':
+			return faClock
 		case 'R':
+		case 'sys.upgrade':
+		case 'sys.order':
 			return faCog
 		case 'modem.plmn':
 		case 'modem.ci':
@@ -113,7 +128,7 @@ export function getVariableIcon(variable: IVariable): IconDefinition {
 		case SYNC_TERMOSTAT_BIN:
 			return faSlidersH
 	}
-	switch (variable.key.split('.')[0]) {
+	switch (variable.key.split('.', 1)[0]) {
 		case 'modem':
 			return faPhone
 		case 'sim':
@@ -130,7 +145,7 @@ export function getVariableIcon(variable: IVariable): IconDefinition {
 
 export function getNeighbourIcon(neighbour: INeighbour): IconDefinition {
 	if (neighbour.name)
-		switch (neighbour.name.split('/')[0]) {
+		switch (neighbour.name.split('/', 1)[0]) {
 			case 'bt':
 				return faBluetooth
 			case 'bts':

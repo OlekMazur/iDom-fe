@@ -1,7 +1,7 @@
 /*
  * This file is part of iDom-fe.
  *
- * Copyright (c) 2019, 2020 Aleksander Mazur
+ * Copyright (c) 2019, 2020, 2024 Aleksander Mazur
  *
  * iDom-fe is free software: you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -17,8 +17,12 @@
  * along with iDom-fe. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { IDataProvider, ErrorMessage } from '../API'
-import { IThings, IThingsListener, ISensor, IDevice, IVariable, INeighbour } from '../Things'
+import { ErrorMessage } from '../API'
+import { DataProvider } from '../Provider'
+import {
+	IThings, IThingsListener, ISensor, IDevice, IVariable, INeighbour,
+	generateVarByKey,
+} from '../Things'
 import { QueryGet, CheckResponse } from '../Client'
 
 /*------------------------------------*/
@@ -44,7 +48,7 @@ function mapThings(input: IRawThings | undefined, cb: IRawThingsMapper): IRawThi
 
 const mapSensor = (id: string, data: IRawThings): ISensor => ({
 	ts: data.ts,
-	name: id,
+	name: data.string_id || id,
 	alias: data.name,
 	value: data.value || 0,
 	unit: data.unit || '',
@@ -53,7 +57,7 @@ const mapSensor = (id: string, data: IRawThings): ISensor => ({
 
 const mapDevice = (id: string, data: IRawThings): IDevice => ({
 	ts: data.ts,
-	name: id,
+	name: data.string_id || id,
 	alias: data.name,
 	state: !!data.state,
 	color: data.rgb,
@@ -99,10 +103,13 @@ function findMaxLastIO(sessions?: IRawSessions): number {
 
 /*------------------------------------*/
 
-export class API1ThingsProvider implements IDataProvider {
-	constructor(protected thingsListener: IThingsListener) { }
+export class API1ThingsProvider extends DataProvider {
+	constructor(protected thingsListener: IThingsListener) {
+		super()
+	}
 
 	public start() {
+		super.start()
 		this.thingsListener.statusChanged('working')
 		QueryGet('js_list.php')
 		.then((response) => {
@@ -110,14 +117,11 @@ export class API1ThingsProvider implements IDataProvider {
 			return response.json()
 		}).then((things) => {
 			const result = this.processThings(things)
-			this.thingsListener.statusChanged(result ? 'ok' : 'error')
+			this.thingsListener.statusChanged(result ? 'ok' : 'error', result ? 'Odśwież' : 'Spróbuj ponownie')
 		}).catch((e) => {
 			console.error(e)
 			this.thingsListener.statusChanged('error', ErrorMessage(e))
 		})
-	}
-
-	public stop() {	// tslint:disable-line:no-empty
 	}
 
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -127,22 +131,30 @@ export class API1ThingsProvider implements IDataProvider {
 		if (typeof things.places !== 'object')
 			return false
 
-		const ts = Date.now() / 1000
 		for (const id of Object.keys(things.places)) {
 			const place = things.places[id]
 			if (!place.sensors && !place.devices && !place.variables)
 				continue
 			const lastIO = findMaxLastIO(place.sessions)
-			this.thingsListener.placeAdded(place.name)
+			this.thingsListener.placeAdded(id)
 			const result: IThings = {
-				ts: lastIO || ts,
+				ts: lastIO || Date.now() / 1000,
+				alias: place.name,
 				sensors: mapThings(place.sensors, mapSensor),
 				devices: mapThings(place.devices, mapDevice),
 				variables: mapThings(place.variables, mapVariable),
 				neighbours: mapThings(place.neighbours, mapNeighbour),
 				messages: [],
+				permissions: {
+					things: true,
+					history: true,
+					video: place.access_rec,
+					tn: place.access_rec,
+					order: place.access_rec,
+				},
 			}
-			this.thingsListener.thingsChanged(place.name, result)
+			result.varByKey = generateVarByKey(result.variables)
+			this.thingsListener.thingsChanged(id, result)
 		}
 
 		return true

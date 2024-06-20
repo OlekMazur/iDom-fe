@@ -20,13 +20,12 @@
 import template from './Termos.vue.js'
 import Vue from 'vue'
 import {
-	IPlacesThings, IThings, IVariable,
-	ITermosMapping, getTermosMapping,
-	getWakeUpSession, getPermittedPlaces,
-	SYNC_TERMOSTAT_BIN,
+	IPlacesThings, IThings, IVariable, ITermosMapping,
+	getTermosMapping, getPermittedPlaces,
+	getVariableIDByKey, SYNC_TERMOSTAT_BIN,
 } from '../data/Things'
 import { ITermos, TTermosWeek, termosNew, termosDecompile, termosCompile } from '../data/Termos'
-import { queryTermos, postTermos, ErrorMessage, getVariableIDByKey, wakeup } from '../data/API'
+import { queryTermos, postTermos, ErrorMessage } from '../data/API'
 import { storageLoadStr, storageSaveStr } from '../storage'
 import { TERMOS_TEMP_STEP } from '../config'
 import Functions from './Functions'
@@ -41,7 +40,6 @@ import { faPlus } from '@fortawesome/free-solid-svg-icons/faPlus'
 import { faFileExport } from '@fortawesome/free-solid-svg-icons/faFileExport'
 import { faFileImport } from '@fortawesome/free-solid-svg-icons/faFileImport'
 import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons/faExclamationTriangle'
-import { faBell } from '@fortawesome/free-solid-svg-icons/faBell'
 
 /* ---------------------------------- */
 
@@ -85,8 +83,7 @@ export default Vue.extend({
 			faPlus,
 			faFileExport,
 			faFileImport,
-			iconWarning: faExclamationTriangle,
-			faBell,
+			faExclamationTriangle,
 		}
 	},
 	destroyed: function() {
@@ -98,7 +95,7 @@ export default Vue.extend({
 			//return Object.keys(this.placesThings).sort()
 			return getPermittedPlaces(this.placesThings, 'things').sort()
 		},
-		things: function(): IThings | null | undefined {
+		things: function(): IThings | undefined {
 			return this.place !== undefined && this.placesThings[this.place] || undefined
 		},
 		mapping: function(): ITermosMapping | undefined {
@@ -110,29 +107,27 @@ export default Vue.extend({
 		timerPrograms: function(): string[] {
 			return Object.keys(this.termos.timerPrograms).sort()
 		},
-		cksumVarID: function(): string {
-			return this.things && getVariableIDByKey(this.things.variables, SYNC_TERMOSTAT_BIN) || ''
+		cksumVarID: function(): string | undefined {
+			return getVariableIDByKey(SYNC_TERMOSTAT_BIN, this.things)
 		},
 		cksumVar: function(): IVariable | undefined {
-			return this.things && this.things.variables && this.things.variables[this.cksumVarID] || undefined
+			return this.cksumVarID && this.things?.variables && this.things.variables[this.cksumVarID] || undefined
 		},
 		cksum: function(): string {
-			return this.cksumVar && this.cksumVar.value || ''
+			return this.cksumVar?.value || ''
 		},
 		unsynchronized: function(): boolean {
-			return this.cksumVar && typeof this.cksumVar.want === 'string' ? this.cksumVar.want !== this.cksum : false
+			return this.cksumVar && typeof this.cksumVar.want === 'string' && this.cksumVar.want !== this.cksum || false
 		},
 		forbidden: function(): boolean {
 			if (!this.things)
 				return true
-			if (this.things &&
-				this.things.permissions &&
-				!this.things.permissions.variable)
+			if (this.things?.permissions && !this.things.permissions.variable)
 				return true
 			return false
 		},
 		downloadFileName: function(): string {
-			return 'termostat-' + this.place + '.bin'
+			return 'termostat' + (this.place ? '-' + this.place : '') + '.bin'
 		},
 		disabled: function(): boolean {
 			return !!this.loading || this.saving
@@ -281,14 +276,6 @@ export default Vue.extend({
 			for (let i = 0; i < 7; i++)
 				if (week[i] === program)
 					week[i] = ''
-		},
-		getWakeUp: function(place: string): string | undefined {
-			return getWakeUpSession(this.placesThings[place])
-		},
-		wakeup: function(place: string): void {
-			const session = this.getWakeUp(place)
-			if (session)
-				wakeup(session)
 		},
 	},
 	watch: {

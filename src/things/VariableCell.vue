@@ -22,10 +22,7 @@ along with iDom-fe. If not, see <https://www.gnu.org/licenses/>.
 		<USB v-if="thing.key === 'sys.usb'" :info="thing.value" />
 		<BTS v-else-if="thing.key === 'modem.ci'" :info="thing.value" />
 		<SMART v-else-if="family === 'smart'" :info="thing.value" />
-		<template v-else-if="family === 'sync'">
-			<Sync :place="place" :name="thing.key" :info="thing.value" />
-			<SyncCloud v-if="file" :place="place" :info="thing" :fn="fn" :file="file" :permissions="permissions" />
-		</template>
+		<Sync v-else-if="family === 'sync'" :place="place" :name="thing.key" :info="thing.value" />
 		<span v-else>{{ value }}</span>
 		<ButtonDelete v-if="deletable" @click="deleteThing" title="Skasuj wartość" />
 	</div>

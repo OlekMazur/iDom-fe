@@ -39,7 +39,7 @@ export default {
 		}),
 		nodeResolve(),
 		css({
-			output: `output/${variant}/main.css`,
+			output: 'main.css',
 			minify: true,
 		}),
 		commonjs(),

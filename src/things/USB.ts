@@ -55,8 +55,8 @@ export default Vue.extend({
 							item.label = subtok[0]
 							break
 						case 'dev': {
-							const ids = subtok[0].split('#')
-							const vidpid = ids[0].split(':')
+							const ids = subtok[0].split('#', 2)
+							const vidpid = ids[0].split(':', 3)
 							if (vidpid.length === 2) {
 								item.href = 'http://www.the-sz.com/products/usbid/index.php?v=' + vidpid[0] + '&p=' + vidpid[1]
 							}

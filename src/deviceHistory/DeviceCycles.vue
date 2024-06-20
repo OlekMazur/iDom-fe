@@ -39,11 +39,11 @@ along with iDom-fe. If not, see <https://www.gnu.org/licenses/>.
 		<tr v-if="summary">
 			<th class="center"></th>
 			<th>Podsumowanie</th>
-			<th>{{ summary.on !== undefined ? formatElapsedTime(summary.on) : '' }}</th>
-			<th class="center bold">{{ summary.on !== undefined && summary.total !== undefined ? formatNumberWithUnit(100 * summary.on / summary.total, '%') : '' }}</th>
-			<th>{{ summary.off !== undefined ? formatElapsedTime(summary.off) : '' }}</th>
-			<th class="center">{{ summary.off !== undefined && summary.total !== undefined ? formatNumberWithUnit(100 * summary.off / summary.total, '%') : '' }}</th>
-			<th>{{ summary.total !== undefined ? formatElapsedTime(summary.total) : '' }}</th>
+			<th>{{ summaryOn }}</th>
+			<th class="center bold">{{ percentOn }}</th>
+			<th>{{ summaryOff }}</th>
+			<th class="center">{{ percentOff }}</th>
+			<th>{{ elapsedTotal }}</th>
 		</tr>
 	</tfoot>
 </table>

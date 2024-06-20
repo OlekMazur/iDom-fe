@@ -1,7 +1,7 @@
 <!--
 This file is part of iDom-fe.
 
-Copyright (c) 2018, 2019 Aleksander Mazur
+Copyright (c) 2018, 2019, 2024 Aleksander Mazur
 
 iDom-fe is free software: you can redistribute it and/or
 modify it under the terms of the GNU General Public License as
@@ -21,6 +21,7 @@ along with iDom-fe. If not, see <https://www.gnu.org/licenses/>.
 	<Camera v-for="camera in cameras" :key="camera.place + '.' + camera.id"
 		:id="camera.id"
 		:place="camera.place"
+		:alias="placesThings[camera.place] && placesThings[camera.place].alias"
 		:permissions="placesThings[camera.place] && placesThings[camera.place].permissions"
 		:data="camera"
 	/>

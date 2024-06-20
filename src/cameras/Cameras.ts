@@ -46,7 +46,7 @@ export default Vue.extend({
 				if (things && things.devices)
 					for (const id in things.devices) {
 						const device = things.devices[id]
-						if (device.name && device.name.split('/')[0] === 'video')
+						if (device.name && device.name.split('/', 1)[0] === 'video')
 							result.push({
 								place,
 								id,

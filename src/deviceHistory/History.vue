@@ -1,7 +1,7 @@
 <!--
 This file is part of iDom-fe.
 
-Copyright (c) 2018, 2019, 2021 Aleksander Mazur
+Copyright (c) 2018, 2019, 2021, 2024 Aleksander Mazur
 
 iDom-fe is free software: you can redistribute it and/or
 modify it under the terms of the GNU General Public License as
@@ -25,7 +25,7 @@ along with iDom-fe. If not, see <https://www.gnu.org/licenses/>.
 					<td class="form-col">
 						<label for="device">Urządzenie</label>
 						<select v-model="device" id="device" :disabled="!placeDevices" required>
-							<optgroup v-if="placeDevices" v-for="(data, place) in placeDevices" :key="place" :label="place">
+							<optgroup v-if="placeDevices" v-for="(data, place) in placeDevices" :key="place" :label="placesThings[place] && placesThings[place].alias">
 								<option v-if="data.devices" v-for="device in data.devices" :key="device.id" :value="'devices/' + buildGlobalThingID(place, device.id)">{{ device.label }}</option>
 								<template v-if="data.sensors && data.sensors.length">
 									<option disabled>Czujniki</option>

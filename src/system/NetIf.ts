@@ -1,7 +1,7 @@
 /*
  * This file is part of iDom-fe.
  *
- * Copyright (c) 2018, 2019 Aleksander Mazur
+ * Copyright (c) 2018, 2019, 2023 Aleksander Mazur
  *
  * iDom-fe is free software: you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -37,10 +37,10 @@ export interface INetIfWithName extends ISystemInfoNetIf {
 
 const NETIF_ICON: { [name: string]: IconDefinition } = {
 	'brint': faHome,
-	'eth0': faNetworkWired,
-	'wlan0': faWifi,
-	'wwan0': faGlobe,
-	'ppp0': faPhone,
+	'eth': faNetworkWired,
+	'wlan': faWifi,
+	'wwan': faGlobe,
+	'ppp': faPhone,
 }
 
 export default Vue.extend({
@@ -58,7 +58,7 @@ export default Vue.extend({
 	},
 	computed: {
 		icon: function(): IconDefinition {
-			return NETIF_ICON[this.data.name]
+			return NETIF_ICON[this.data.name.replace(/\d+$/, '')]
 		},
 	},
 })

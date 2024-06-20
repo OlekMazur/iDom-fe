@@ -23,6 +23,7 @@ import { DataSnapshot, Query,
 } from 'firebase/database'
 import { database } from './Setup'
 import { IHistoryEntry, ThingType, THistoryListener } from '../History'
+import { type2cloud } from './Things'
 import { strToInt } from '../../utils'
 import { MAX_DELETE_ENTRIES_AT_ONCE } from '../../config'
 
@@ -75,7 +76,7 @@ export function cloudHistoryRegisterListener(
 	tsMax: number,
 	cb: THistoryListener) {
 
-	const q = query(ref(database, 'things/' + place + '/history/' + type + '/' + id),
+	const q = query(ref(database, 'things/' + place + '/h/' + type2cloud(type) + '/' + id),
 		orderByKey(),
 		startAt(tsMin.toString()),
 		endAt(tsMax.toString()),
@@ -91,7 +92,7 @@ export function cloudHistoryRegisterListenerNewest(
 	cntMax: number,
 	cb: THistoryListener) {
 
-	const q = query(ref(database, 'things/' + place + '/history/' + type + '/' + id),
+	const q = query(ref(database, 'things/' + place + '/h/' + type2cloud(type) + '/' + id),
 		orderByKey(),
 		limitToLast(cntMax),
 	)
@@ -105,7 +106,7 @@ export function cloudHistoryRegisterOldestEntryListener(
 	id: string,
 	cb: THistoryListener) {
 
-	const q = query(ref(database, 'things/' + place + '/history/' + type + '/' + id),
+	const q = query(ref(database, 'things/' + place + '/h/' + type2cloud(type) + '/' + id),
 		orderByKey(),
 		limitToFirst(1),
 	)
@@ -126,7 +127,7 @@ export function cloudHistoryDeleteEntry(
 	ts: number): Promise<void> {
 
 	console.log('cloudHistoryDeleteEntry', place, type, id, ts)
-	return set(ref(database, 'things/' + place + '/history/' + type + '/' + id + '/' + ts), null)
+	return set(ref(database, 'things/' + place + '/h/' + type2cloud(type) + '/' + id + '/' + ts), null)
 }
 
 export function cloudHistoryDeleteEntriesOlderThan(
@@ -136,7 +137,7 @@ export function cloudHistoryDeleteEntriesOlderThan(
 	tsMax: number): Promise<boolean> {
 
 	console.log('cloudHistoryDeleteEntriesOlderThan', place, type, id, tsMax)
-	return get(query(ref(database, 'things/' + place + '/history/' + type + '/' + id),
+	return get(query(ref(database, 'things/' + place + '/h/' + type2cloud(type) + '/' + id),
 		orderByKey(),
 		endAt((tsMax - 1).toString()),
 		limitToFirst(MAX_DELETE_ENTRIES_AT_ONCE),

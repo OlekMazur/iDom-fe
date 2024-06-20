@@ -1,7 +1,7 @@
 /*
  * This file is part of iDom-fe.
  *
- * Copyright (c) 2018, 2019, 2022, 2023 Aleksander Mazur
+ * Copyright (c) 2018, 2019, 2022, 2023, 2024 Aleksander Mazur
  *
  * iDom-fe is free software: you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -51,11 +51,8 @@ import NeighboursHistory from './neighbours/History'
 import Audios from './audio/Audios'
 import Syslogs from './syslogs/Syslogs'
 
-import { DataStatus, IDataProvider,
-	createThingsProvider,
-	createSystemInfoProvider,
-	createAudiosProvider,
-} from './data/API'
+import { DataStatus, IDataProvider } from './data/Provider'
+import { createThingsProvider, createSystemInfoProvider, createAudiosProvider } from './data/API'
 import { IPlacesThings, IThings, IThingsListener } from './data/Things'
 import { ISystemInfo, ISystemInfoListener } from './data/System'
 import { IAudios, IAudiosListener } from './data/Audio'
@@ -82,7 +79,7 @@ class MainListener implements IThingsListener, ISystemInfoListener, IAudiosListe
 }
 
 const routes: RouteConfig[] = []
-if (VARIANT === 'local' || VARIANT === 'cloud') {
+if (VARIANT === 'local' || VARIANT === 'cloud' || VARIANT === 'api1') {
 	routes.push({
 		path: '/',
 		redirect: TERMOSTAT_PATH,
@@ -99,11 +96,6 @@ if (VARIANT === 'local' || VARIANT === 'cloud') {
 	})
 }
 if (VARIANT === 'cloud' || VARIANT === 'api1') {
-	if (VARIANT === 'api1')
-		routes.push({
-			path: '/',
-			redirect: '/chart',
-		})
 	routes.push({
 		path: '/chart',
 		component: Chart,
@@ -152,6 +144,8 @@ if (VARIANT === 'local' || VARIANT === 'cloud') {
 			provider: 'things',
 		},
 	})
+}
+if (VARIANT === 'local' || VARIANT === 'cloud' || VARIANT === 'api1') {
 	routes.push({
 		path: '/video',
 		component: Videos,
@@ -161,8 +155,6 @@ if (VARIANT === 'local' || VARIANT === 'cloud') {
 			provider: 'things',
 		},
 	})
-}
-if (VARIANT === 'local' || VARIANT === 'cloud' || VARIANT === 'api1') {
 	routes.push({
 		path: '/things',
 		component: OtherThings,
@@ -310,6 +302,14 @@ export default Vue.extend({
 				this.status = 'unknown'
 			}
 			this.provider = to
+		},
+		providerAction: function() {
+			if (this.provider === undefined) {
+				return
+			}
+			const impl = this.providers[this.provider]
+			if (impl)
+				impl.action()
 		},
 		updateStatus: function(status: DataStatus, message?: string) {
 			//console.log('status', status, message)

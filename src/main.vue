@@ -18,7 +18,7 @@ along with iDom-fe. If not, see <https://www.gnu.org/licenses/>.
 -->
 
 <div id="main">
-	<MenuEntry :items="routes" :status="status" :message="message" :nh="nh" />
+	<MenuEntry :items="routes" :status="status" :message="message" :nh="nh" @click="providerAction" />
 	<transition name="basic" mode="out-in">
 		<router-view :places-things="placesThings" :system="system" :audios="audios" />
 	</transition>

@@ -32,9 +32,13 @@ export default Vue.extend({
 	},
 	data: function() {
 		return {
-			formatTS,
 			iconOn: faCircle,
 			iconOff: faCircleNotch,
 		}
+	},
+	computed: {
+		ts: function(): string {
+			return this.entry && this.entry.ts ? formatTS(this.entry.ts) : ''
+		},
 	},
 })

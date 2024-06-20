@@ -1,7 +1,7 @@
 <!--
 This file is part of iDom-fe.
 
-Copyright (c) 2018, 2019, 2021 Aleksander Mazur
+Copyright (c) 2018, 2019, 2021, 2024 Aleksander Mazur
 
 iDom-fe is free software: you can redistribute it and/or
 modify it under the terms of the GNU General Public License as
@@ -47,13 +47,13 @@ along with iDom-fe. If not, see <https://www.gnu.org/licenses/>.
 			<font-awesome-icon :icon="iconCancel" />
 			Anuluj
 		</button>
-		<span v-if="showPlace && place"> @{{ place }}</span>
+		<span v-if="showPlace && alias"> @{{ alias }}</span>
 	</div>
 </form>
 <div v-else>
 	<div>
 		<slot/>
 		<a @click.prevent="showForm" href="#">{{ thing.alias || thing.name }}</a>
-		<span v-if="showPlace && place"> @{{ place }}</span>
+		<span v-if="showPlace && alias"> @{{ alias }}</span>
 	</div>
 </div>

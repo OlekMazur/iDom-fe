@@ -1,7 +1,7 @@
 <!--
 This file is part of iDom-fe.
 
-Copyright (c) 2019, 2022 Aleksander Mazur
+Copyright (c) 2019, 2022, 2024 Aleksander Mazur
 
 iDom-fe is free software: you can redistribute it and/or
 modify it under the terms of the GNU General Public License as
@@ -24,7 +24,7 @@ along with iDom-fe. If not, see <https://www.gnu.org/licenses/>.
 				<tr class="form-row">
 					<td class="form-col" v-for="place in places">
 						<ToggleSwitch :key="place" :state="!allPlacesExcluded[place]" @switch="excludePlace(place, !$event)" />
-						{{ place }}
+						{{ placesThings[place] && placesThings[place].alias }}
 					</td>
 					<td class="form-col" v-for="(info, type) in typeIcons">
 						<font-awesome-layers fixed-width @click.prevent="excludeType(type, !typesExcluded[type])" :title="info.title">

@@ -24,9 +24,9 @@ along with iDom-fe. If not, see <https://www.gnu.org/licenses/>.
 	</td>
 	<td class="right">{{ size }}</td>
 	<td>{{ syslog.desc }}</td>
-	<td v-if="permissionToOrder" class="center">
+	<td class="center">
 		<ToggleSwitch
-			:state="syslog.order"
+			:state="isOrdered"
 			:disabled="!permissionToOrder"
 			@switch="order(syslog.name, $event)"
 		/>

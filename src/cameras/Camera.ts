@@ -1,7 +1,7 @@
 /*
  * This file is part of iDom-fe.
  *
- * Copyright (c) 2018, 2019 Aleksander Mazur
+ * Copyright (c) 2018, 2019, 2024 Aleksander Mazur
  *
  * iDom-fe is free software: you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -33,11 +33,14 @@ import SensorDeviceForm from '../things/SensorDeviceForm'
 import CameraForm from './CameraForm'
 import { DrawYUVOnCanvas, IFrameDiffInfo } from './FrameCanvas'
 
+const CAM_ID_PFX = 'video/'
+
 export default Vue.extend({
 	...template,
 	components: { SensorDeviceForm, CameraForm },
 	props: {
 		place: String as () => string,
+		alias: String as () => string,
 		id: String as () => string,
 		permissions: Object as () => IPermissions,
 		data: Object as () => IDevice,
@@ -112,7 +115,7 @@ export default Vue.extend({
 	},
 	computed: {
 		camID: function(): string {
-			return this.data.name ? this.data.name.split('/', 2)[1] : ''
+			return this.data.name && this.data.name.startsWith(CAM_ID_PFX) ? this.data.name.substring(CAM_ID_PFX.length) : ''
 		},
 		globalID: function(): string {
 			return this.place + '.' + this.camID

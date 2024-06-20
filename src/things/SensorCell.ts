@@ -19,7 +19,7 @@
 
 import template from './SensorCell.vue.js'
 import Vue from 'vue'
-import Timestamp from './Timestamp'
+import Timestamp from '../widgets/Timestamp'
 import { ISensor } from '../data/Things'
 import { formatNumberWithUnit } from '../format'
 

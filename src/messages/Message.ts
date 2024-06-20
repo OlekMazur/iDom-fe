@@ -45,7 +45,7 @@ export default Vue.extend({
 	},
 	computed: {
 		matchesIMSI: function(): boolean {
-			return this.message && this.message.name && this.message.name.split(',')[0] === this.imsi || false
+			return this.message && this.message.name && this.message.name.split(',', 1)[0] === this.imsi || false
 		},
 		ts: function(): string {
 			return this.message ? formatTS(this.message.ts) : ''

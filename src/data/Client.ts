@@ -23,7 +23,7 @@ export interface IArgs {
 
 const CONTENT_TYPE = 'Content-Type'
 
-function encodeArgs(args: IArgs): string {
+export function encodeArgs(args: IArgs): string {
 	return Object.keys(args).map((param) => {
 		if (Array.isArray(args[param]))
 			return (args[param] as string[])
@@ -87,7 +87,7 @@ export function CheckResponse(response: Response, contentType?: string): void {
 		let type = response.headers.get(CONTENT_TYPE)
 		if (!type)
 			throw new Error('Zła odpowiedź serwera')
-		type = type.split(';')[0]
+		type = type.split(';', 1)[0]
 		if (type !== contentType)
 			throw new Error('Zła odpowiedź serwera: ' + type)
 	}
@@ -97,8 +97,8 @@ export function AutoParseResponse(response: Response): Promise<string | object> 
 	let type = response.headers.get(CONTENT_TYPE)
 	if (!type)
 		return Promise.reject()
-	type = type.split(';')[0]
-	type = type.split('/')[1]
+	type = type.split(';', 1)[0]
+	type = type.split('/', 2)[1]
 	return type === 'json' ? response.json() : response.text()
 }
 

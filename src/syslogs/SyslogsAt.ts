@@ -1,7 +1,7 @@
 /*
  * This file is part of iDom-fe.
  *
- * Copyright (c) 2021, 2023 Aleksander Mazur
+ * Copyright (c) 2021, 2023, 2024 Aleksander Mazur
  *
  * iDom-fe is free software: you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -19,14 +19,13 @@
 
 import template from './SyslogsAt.vue.js'
 import Vue from 'vue'
-import { IThings, getWakeUpSession } from '../data/Things'
-import { wakeup, ILogFile, LogsRegisterListener, LogsUnregisterListener, LogsForceSync } from '../data/API'
+import { IThings } from '../data/Things'
+import { ILogFile, LogsRegisterListener, LogsUnregisterListener, LogsForceSync } from '../data/API'
 import { formatTS } from '../format'
 import Syslog from './Syslog'
 import { faSpinner } from '@fortawesome/free-solid-svg-icons/faSpinner'
 import { faEnvelope } from '@fortawesome/free-solid-svg-icons/faEnvelope'
 import { faSync } from '@fortawesome/free-solid-svg-icons/faSync'
-import { faBell } from '@fortawesome/free-solid-svg-icons/faBell'
 
 export default Vue.extend({
 	...template,
@@ -38,47 +37,39 @@ export default Vue.extend({
 	},
 	data: function() {
 		const syslogs: ILogFile[] = []
+		let ts: number | undefined
 
 		return {
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			query: undefined as any,
 			syslogs,
+			ts,
 			waiting: false,
 
 			faSpinner,
 			faEnvelope,
 			faSync,
-			faBell,
 		}
 	},
 	computed: {
-		permissionToOrder: function() {
-			return this.things && this.things.permissions && this.things.permissions.orderLog
+		permissionToOrder: function(): boolean | undefined {
+			return this.things && this.things.permissions && this.things.permissions.order
 		},
-		ts: function() {
-			return this.things && this.things.request && this.things.request.logListSyncTS && formatTS(this.things.request.logListSyncTS) || ''
+		refreshAvailable: function(): boolean | undefined  {
+			return this.things && this.things.permissions && this.things.permissions.logsSync
 		},
-		refreshAvailable: function() {
-			return this.things && this.things.permissions && this.things.permissions.logListSync
-				&& this.things.request && this.things.request.logListSync
+		tsFormatted: function(): string {
+			return this.ts ? formatTS(this.ts) : ''
 		},
 	},
 	methods: {
-		logsCB: function(place: string, syslogs: ILogFile[]): void {
+		logsCB: function(place: string, syslogs: ILogFile[], ts?: number): void {
 			//console.log('logsCB', place, syslogs.length)
 			if (place !== this.place)
 				return
-
 			this.syslogs = syslogs
+			this.ts = ts
 			this.waiting = false
-		},
-		getWakeUp: function(): string | undefined {
-			return getWakeUpSession(this.things)
-		},
-		wakeup: function(): void {
-			const session = this.getWakeUp()
-			if (session)
-				wakeup(session)
 		},
 		refresh: function(): void {
 			LogsForceSync(this.place)

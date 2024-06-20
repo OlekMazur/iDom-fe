@@ -31,11 +31,28 @@ export default Vue.extend({
 		index: Number as () => number,
 		deletableShorterThan: Number as () => number,
 	},
-	data: function() {
-		return {
-			formatTS,
-			formatElapsedTime,
-			formatNumberWithUnit,
-		}
+	computed: {
+		ts: function(): string {
+			return this.entry.ts ? formatTS(this.entry.ts) : ''
+		},
+		elapsedOn: function(): string | undefined {
+			return this.entry.on !== undefined && formatElapsedTime(this.entry.on) || undefined
+		},
+		elapsedOff: function(): string | undefined {
+			return this.entry.off !== undefined && formatElapsedTime(this.entry.off) || undefined
+		},
+		percentOn: function(): string {
+			return this.entry.on !== undefined && this.entry.total !== undefined
+				? formatNumberWithUnit(100 * this.entry.on / this.entry.total, '%')
+				: ''
+		},
+		percentOff: function(): string {
+			return this.entry.off !== undefined && this.entry.total !== undefined
+				? formatNumberWithUnit(100 * this.entry.off / this.entry.total, '%')
+				: ''
+		},
+		elapsedTotal: function(): string {
+			return this.entry.total !== undefined ? formatElapsedTime(this.entry.total) : ''
+		},
 	},
 })

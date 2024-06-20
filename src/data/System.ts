@@ -17,7 +17,7 @@
  * along with iDom-fe. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { IDataListener } from './API'
+import { IDataListener } from './Provider'
 
 /*------------------------------------*/
 

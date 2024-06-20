@@ -1,7 +1,7 @@
 /*
  * This file is part of iDom-fe.
  *
- * Copyright (c) 2018, 2019 Aleksander Mazur
+ * Copyright (c) 2018, 2019, 2024 Aleksander Mazur
  *
  * iDom-fe is free software: you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -21,11 +21,8 @@ import template from './Messages.vue.js'
 import Vue from 'vue'
 import { faPaperPlane } from '@fortawesome/free-solid-svg-icons/faPaperPlane'
 import { faTimes } from '@fortawesome/free-solid-svg-icons/faTimes'
-import { faBell } from '@fortawesome/free-solid-svg-icons/faBell'
-import { IPlacesThings, IThings, IMessages, IMessage, IVariable, IGenericParams,
-	getWakeUpSession,
-} from '../data/Things'
-import { sendUSSD, sendSMS, cancelOrderUSSDorSMS, ErrorMessage, getVariablesIndexedByKey, wakeup } from '../data/API'
+import { IPlacesThings, IThings, IMessages, IMessage, getVariableByKey } from '../data/Things'
+import { sendUSSD, sendSMS, purgeMessages, ErrorMessage } from '../data/API'
 import { storageLoadStr, storageSaveStr } from '../storage'
 import Message from './Message'
 import USSDHints from './USSDHints'
@@ -37,6 +34,8 @@ function cmpMessages(a: IMessage, b: IMessage): number {
 declare const VARIANT: string
 const placeSelection = VARIANT !== 'local'
 
+type TMessageGroup = ''|'SMS'|'USSD'
+
 export default Vue.extend({
 	...template,
 	components: { Message, USSDHints },
@@ -47,8 +46,7 @@ export default Vue.extend({
 		return {
 			iconSend: faPaperPlane,
 			iconDelete: faTimes,
-			iconWakeUp: faBell,
-			op: '',
+			op: '' as TMessageGroup,
 			ussd: '',
 			smsTo: '',
 			sms: '',
@@ -63,16 +61,16 @@ export default Vue.extend({
 			//return Object.keys(this.placesThings).sort()
 			const result: string[] = []
 			for (const place in this.placesThings) {
-				const data = this.placesThings[place]
-				if (data) {
-					const p = data.permissions
-					if (!p || (p.generic && (p.generic.sms || p.generic.ussd)))
+				const things = this.placesThings[place]
+				if (things) {
+					const p = things.permissions
+					if (!p || (p.post && (p.post.sms || p.post.ussd)))
 						result.push(place)
 				}
 			}
 			return result.sort()
 		},
-		things: function(): IThings | null | undefined {
+		things: function(): IThings | undefined {
 			//console.log('computed', 'things', this.place)
 			return this.place !== undefined && this.placesThings[this.place] || undefined
 		},
@@ -87,31 +85,35 @@ export default Vue.extend({
 			}
 			return result
 		},
-		imsi: function(): string {
+		imsi: function(): string | undefined {
 			//console.log('computed', 'imsi', this.place)
 			//if (this.things && this.things.variables && this.things.variables['sim.imsi'])
 			//	return this.things.variables['sim.imsi'].value
-			if (this.things) {
-				const variable: IVariable = getVariablesIndexedByKey(this.things.variables)['sim.imsi']
-				if (variable)
-					return variable.value
-			}
-			return ''
+			return getVariableByKey('sim.imsi', this.things)?.value
 		},
 		permUSSD: function(): boolean {
 			if (!this.things)
 				return false
 			if (!this.things.permissions)
 				return true
-			return this.things.permissions.generic && this.things.permissions.generic.ussd || false
+			return this.things.permissions.post?.ussd || false
 		},
 		permSMS: function(): boolean {
 			if (!this.things)
 				return false
 			if (!this.things.permissions)
 				return true
-			return this.things.permissions.generic && this.things.permissions.generic.sms || false
+			return this.things.permissions.post?.sms || false
 		},
+		permMsgPurge: function(): boolean {
+			if (!this.things)
+				return false
+			if (!this.things.permissions)
+				return true
+			const post = this.things.permissions.post
+			return post && post['msg-purge'] || false
+		},
+		/*
 		pendingUSSD: function(): IGenericParams | undefined {
 			//console.log('computed', 'pendingUSSD', this.things && this.things.request && this.things.request.generic &&
 			//	JSON.stringify(this.things.request.generic.ussd))
@@ -124,6 +126,7 @@ export default Vue.extend({
 			return this.things && this.things.request && this.things.request.generic &&
 				typeof this.things.request.generic.sms === 'object' && this.things.request.generic.sms || undefined
 		},
+		*/
 	},
 	watch: {
 		places: {
@@ -141,23 +144,15 @@ export default Vue.extend({
 					this.place = place
 			},
 		},
-		/*
-		place: {
-			immediate: true,
-			handler: function() {
-				//console.log('watch', 'place', this.places, this.place)
-				this.workaround = {}	// force update
-			},
-		},
-		*/
 		permUSSD: function() {
-			if (this.op === 'ussd' && !this.permUSSD)
+			if (this.op === 'USSD' && !this.permUSSD)
 				this.op = ''
 		},
 		permSMS: function() {
-			if (this.op === 'sms' && !this.permSMS)
+			if (this.op === 'SMS' && !this.permSMS)
 				this.op = ''
 		},
+		/*
 		pendingUSSD: {
 			immediate: true,
 			handler: function() {
@@ -170,6 +165,7 @@ export default Vue.extend({
 				this.updatePendingSMS()
 			},
 		},
+		*/
 	},
 	methods: {
 		selectPlace: function(place?: string): void {
@@ -185,11 +181,11 @@ export default Vue.extend({
 				this.working = true
 				let promise: Promise<void>
 				switch (this.op) {
-					case 'ussd':
-						promise = sendUSSD(this.place, this.ussd).then(this.updatePendingUSSD)
+					case 'USSD':
+						promise = sendUSSD(this.place, this.ussd)//.then(this.updatePendingUSSD)
 						break
-					case 'sms':
-						promise = sendSMS(this.place, this.smsTo, this.sms).then(this.updatePendingSMS)
+					case 'SMS':
+						promise = sendSMS(this.place, this.smsTo, this.sms)//.then(this.updatePendingSMS)
 						break
 					default:
 						promise = Promise.reject()
@@ -202,10 +198,11 @@ export default Vue.extend({
 				})
 			}
 		},
+		/*
 		cancel: function() {
 			if (this.place === undefined)
 				return
-			if (this.op !== 'ussd' && this.op !== 'sms')
+			if (this.op !== 'USSD' && this.op !== 'SMS')
 				return
 			this.working = true
 			cancelOrderUSSDorSMS(this.place, this.op)
@@ -229,13 +226,18 @@ export default Vue.extend({
 			}
 			//console.log('watch', 'pendingSMS', this.smsTo, this.sms)
 		},
-		getWakeUp: function(place: string): string | undefined {
-			return getWakeUpSession(this.placesThings[place])
-		},
-		wakeup: function(place: string): void {
-			const session = this.getWakeUp(place)
-			if (session)
-				wakeup(session)
+		*/
+		purge: function() {
+			if (this.place === undefined)
+				return
+			if (confirm(`Czy na pewno skasować wszystkie odebrane wiadomości ${this.op}, które zostały już obsłużone?`)) {
+				this.working = true
+				purgeMessages(this.place, this.op).catch((e) => {
+					this.$alert(ErrorMessage(e))
+				}).then(() => {
+					this.working = false
+				})
+			}
 		},
 	},
 })

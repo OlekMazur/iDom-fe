@@ -17,10 +17,10 @@
  * along with iDom-fe. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { DataStatus } from '../API'
+import { DataStatus } from '../Provider'
 import { IThings, IThingsListener } from '../Things'
 import { PollingFetcher, IPollingListener } from './PollingFetcher'
-import ProcessThings from './ProcessThings'
+import ProcessThings from '../csv/ProcessThings'
 
 /*------------------------------------*/
 

@@ -1,7 +1,7 @@
 <!--
 This file is part of iDom-fe.
 
-Copyright (c) 2018, 2019, 2021 Aleksander Mazur
+Copyright (c) 2019, 2024 Aleksander Mazur
 
 iDom-fe is free software: you can redistribute it and/or
 modify it under the terms of the GNU General Public License as
@@ -17,12 +17,9 @@ You should have received a copy of the GNU General Public License
 along with iDom-fe. If not, see <https://www.gnu.org/licenses/>.
 -->
 
-<ul>
-	<li v-for="(value, key) in data">
-		<template v-if="typeof value === 'object'">
-			{{ key }}
-			<RequestData :data="value" />
-		</template>
-		<template v-else>{{ key }} = {{ value }}</template>
-	</li>
-</ul>
+<div v-if="old" :class="normal ? '' : 'small'">
+	{{ line1 }}
+	<template v-if="line1 && line2"><br /></template>
+	{{ line2 }}
+	<slot />
+</div>

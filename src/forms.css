@@ -1,7 +1,7 @@
 /*
  * This file is part of iDom-fe.
  *
- * Copyright (c) 2018, 2019 Aleksander Mazur
+ * Copyright (c) 2018, 2019, 2024 Aleksander Mazur
  *
  * iDom-fe is free software: you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -101,7 +101,7 @@ input:focus, select:focus, textarea:focus {
 	border-color: #2b7a78;
 }
 
-:invalid, .invalid {
+input:invalid, input.invalid, select:invalid, select.invalid, textarea:invalid, textarea.invalid {
 	border: 2px solid #af3a39;
 }
 

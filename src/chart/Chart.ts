@@ -1,7 +1,7 @@
 /*
  * This file is part of iDom-fe.
  *
- * Copyright (c) 2018, 2019 Aleksander Mazur
+ * Copyright (c) 2018, 2019, 2024 Aleksander Mazur
  *
  * iDom-fe is free software: you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -93,7 +93,7 @@ interface IData extends IState {
 function deltaThingSelect(from: string[], to: string[]): string[] {
 	const result: string[] = []
 	for (const id of to)
-		if (from.indexOf(id) < 0)
+		if (!from.includes(id))
 			result.push(id)
 	return result
 }
@@ -161,7 +161,7 @@ export default Vue.extend({
 					continue
 				let label = device.alias || device.name || ''
 				if (this.multiplePlaces)
-					label += ' @' + parsed.place
+					label += ' @' + things.alias
 				result[globalID] = {
 					place: parsed.place,
 					label,
@@ -189,7 +189,7 @@ export default Vue.extend({
 					continue
 				let label = sensor.alias || sensor.name || ''
 				if (this.multiplePlaces)
-					label += ' @' + parsed.place
+					label += ' @' + things.alias
 				result[globalID] = {
 					place: parsed.place,
 					label,
@@ -222,7 +222,9 @@ export default Vue.extend({
 			return drawGrid(this.size, this.scale, this.posXEnd, this.rangeX, this.posYLow, this.rangeY)
 		},
 		posYFormatted: function(): string {
-			return this.posYLow ? formatRealNumber(this.posYLow) + '÷' + formatRealNumber(this.posYLow + this.rangeY) : ''
+			const f1 = this.posYLow || this.rangeY ? formatRealNumber(this.posYLow) : ''
+			const f2 = this.rangeY ? formatRealNumber(this.posYLow + this.rangeY) : ''
+			return f1 + (f1 && f2 ? '÷' : '') + f2
 		},
 	},
 	watch: {

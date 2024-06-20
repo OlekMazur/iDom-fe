@@ -22,7 +22,7 @@ import Vue from 'vue'
 import { INeighbourDevice } from './neighbours'
 import { formatNumberWithUnit } from '../format'
 import SensorDeviceForm from '../things/SensorDeviceForm'
-import Timestamp from '../things/Timestamp'
+import Timestamp from '../widgets/Timestamp'
 import { faCircle } from '@fortawesome/free-solid-svg-icons/faCircle'
 import { faCircleNotch } from '@fortawesome/free-solid-svg-icons/faCircleNotch'
 
@@ -217,9 +217,9 @@ export default Vue.extend({
 		},
 		url: function() {
 			// bts/plmn.lac.ci
-			const ids = this.nd.thing.name && this.nd.thing.name.split('/')
+			const ids = this.nd.thing.name && this.nd.thing.name.split('/', 2)
 			if (ids && ids[0] === 'bts') {
-				const btsID = ids[1].split('.')
+				const btsID = ids[1].split('.', 4)
 				if (btsID.length === 3) {
 					const cid = parseInt(btsID[2], 16)
 					if (!isNaN(cid)) {

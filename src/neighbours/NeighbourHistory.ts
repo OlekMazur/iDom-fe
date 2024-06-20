@@ -1,7 +1,7 @@
 /*
  * This file is part of iDom-fe.
  *
- * Copyright (c) 2019, 2020 Aleksander Mazur
+ * Copyright (c) 2019, 2020, 2024 Aleksander Mazur
  *
  * iDom-fe is free software: you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -128,7 +128,7 @@ export default Vue.extend({
 				listener.waiting = false
 				this.waiting--
 			}
-			listener.history = neighbourConvertHistory(place, history as IDeviceHistoryEntry[])
+			listener.history = neighbourConvertHistory(this.placesThings[place]?.alias || '', history as IDeviceHistoryEntry[])
 
 			this.history = neighbourCombineHistory(
 				Object.values(this.places)

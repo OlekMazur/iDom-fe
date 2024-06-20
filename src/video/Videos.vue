@@ -1,7 +1,7 @@
 <!--
 This file is part of iDom-fe.
 
-Copyright (c) 2018, 2019, 2020, 2022 Aleksander Mazur
+Copyright (c) 2018, 2019, 2020, 2022, 2024 Aleksander Mazur
 
 iDom-fe is free software: you can redistribute it and/or
 modify it under the terms of the GNU General Public License as
@@ -25,7 +25,7 @@ along with iDom-fe. If not, see <https://www.gnu.org/licenses/>.
 					<td class="form-col" v-if="placeSelection">
 						<select v-model="place" @change="placeSelected">
 							<option value="">Najnowsze z wielu miejsc</option>
-							<option v-for="place in places" :key="place" :value="place">{{ place }}</option>
+							<option v-for="place in places" :key="place" :value="place">{{ placesThings[place] && placesThings[place].alias }}</option>
 						</select>
 					</td>
 					<template v-if="!placeSelection || place">
@@ -63,7 +63,7 @@ along with iDom-fe. If not, see <https://www.gnu.org/licenses/>.
 					</template>
 					<td class="form-col" v-else v-for="place in places">
 						<ToggleSwitch :key="place" :state="!allPlacesExcluded[place]" @switch="excludePlace(place, !$event)" />
-						{{ place }}
+						{{ placesThings[place] && placesThings[place].alias }}
 					</td>
 					<td class="form-col" title="Liczba nagrań widocznych naraz">
 						<EditNumber v-model="showAtOnce" min="1" max="100" />
@@ -71,11 +71,6 @@ along with iDom-fe. If not, see <https://www.gnu.org/licenses/>.
 					<td class="form-col">
 						<button type="button" @click="allPlay = !allPlay" :title="allPlay ? 'Nie odtwarzaj wszystkich' : 'Odtwarzaj wszystkie'">
 							<font-awesome-icon :icon="allPlay ? faPlay : faPause" fixed-width />
-						</button>
-					</td>
-					<td class="form-col" v-if="place && getWakeUp(place)">
-						<button type="button" @click="wakeup(place)" title="Obudź" class="button">
-							<font-awesome-icon :icon="faBell" fixed-width />
 						</button>
 					</td>
 				</tr>

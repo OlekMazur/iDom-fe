@@ -19,7 +19,7 @@ along with iDom-fe. If not, see <https://www.gnu.org/licenses/>.
 
 <tr>
 	<td class="right">{{ index }}</td>
-	<td class="min-width">{{ formatTS(entry.ts) }}</td>
+	<td class="min-width">{{ ts }}</td>
 	<td class="center">
 		<font-awesome-icon :icon="entry.value ? iconOn : iconOff" :title="entry.value ? 'Pojawienie się' : 'Zniknięcie'" fixed-width />
 	</td>

@@ -25,7 +25,7 @@ import { faSync } from '@fortawesome/free-solid-svg-icons/faSync'
 import { faSpinner } from '@fortawesome/free-solid-svg-icons/faSpinner'
 import { QuerySyslog, ISyslogRaw } from '../data/local/Syslog'
 import { orderByNameAsc } from '../sort'
-import ProcessSyslog from '../data/local/ProcessSyslog'
+import ProcessSyslog from '../data/csv/ProcessSyslog'
 import { ISyslogEntry } from '../data/Syslog'
 import SyslogEntry from './SyslogEntry'
 

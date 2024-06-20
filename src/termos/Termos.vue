@@ -1,7 +1,7 @@
 <!--
 This file is part of iDom-fe.
 
-Copyright (c) 2018, 2019, 2021 Aleksander Mazur
+Copyright (c) 2018, 2019, 2021, 2024 Aleksander Mazur
 
 iDom-fe is free software: you can redistribute it and/or
 modify it under the terms of the GNU General Public License as
@@ -25,15 +25,12 @@ along with iDom-fe. If not, see <https://www.gnu.org/licenses/>.
 					<td class="form-col" v-if="placeSelection">
 						<select :value="place" @change.prevent="selectPlace($event.target.value)" required>
 							<option v-if="places.indexOf('') < 0" value="" disabled>Miejsce</option>
-							<option v-for="place in places" :key="place" :value="place">{{ place }}</option>
+							<option v-for="place in places" :key="place" :value="place">{{ placesThings[place] && placesThings[place].alias }}</option>
 						</select>
 					</td>
 					<td class="form-col" v-if="unsynchronized">
-						<span v-if="getWakeUp(place)" title="Obudź" class="button" @click="wakeup(place)">
-							<font-awesome-icon :icon="faBell" fixed-width />
-						</span>
-						<span v-else class="big" title="Oczekiwanie na aktualizację, proszę czekać">
-							<font-awesome-icon :icon="iconWarning" class="blink" />
+						<span class="big" title="Oczekiwanie na aktualizację, proszę czekać">
+							<font-awesome-icon :icon="faExclamationTriangle" class="blink" />
 						</span>
 					</td>
 				</tr>

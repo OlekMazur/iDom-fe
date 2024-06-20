@@ -19,19 +19,15 @@
 
 import template from './VideosAtAllPlaces.vue.js'
 import Vue from 'vue'
-import { IPlacesThings, IThings, IDevices, IPermissions } from '../data/Things'
+import { IPlacesThings, IThings, IPermissions } from '../data/Things'
 import { IVideo } from '../data/Video'
-import {
-	NewestVideosRegisterListener, NewestVideosUnregisterListener,
-	getThingsIndexedByName,
-} from '../data/API'
+import { NewestVideosRegisterListener, NewestVideosUnregisterListener } from '../data/API'
 import VideoEntry from './VideoEntry'
 
 interface IVideoExt extends IVideo {
 	place: string
 	things?: IThings | null
 	permissions?: IPermissions | null
-	devices: IDevices
 }
 
 interface IPlaceData {
@@ -137,7 +133,6 @@ export default Vue.extend({
 
 			const things = this.placesThings[place]
 			const permissions = things && things.permissions
-			const devices = getThingsIndexedByName(things && things.devices) as IDevices
 
 			const result: IVideoExt[] = []
 			for (const video of videos)
@@ -146,7 +141,6 @@ export default Vue.extend({
 					place,
 					things,
 					permissions,
-					devices,
 				})
 
 			const placeData = this.placesData[place]

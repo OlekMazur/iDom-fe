@@ -22,7 +22,7 @@ import Vue from 'vue'
 import ThingCell from './ThingCell'
 import ToggleSwitch from '../widgets/ToggleSwitch'
 import { IPlaceSelect, IThingsInfo, IThingsState } from './things'
-import { IPlacesThings, IThingsGroup, TThingType, buildGlobalThingID, getWakeUpSession } from '../data/Things'
+import { IPlacesThings, IThingsGroup, TThingType, buildGlobalThingID } from '../data/Things'
 import { OperationSetThingColor, ErrorMessage, wakeup } from '../data/API'
 import { faQuestion } from '@fortawesome/free-solid-svg-icons/faQuestion'
 import { faChartArea } from '@fortawesome/free-solid-svg-icons/faChartArea'
@@ -44,6 +44,8 @@ export default Vue.extend({
 	},
 	data: function() {
 		return {
+			wakeup,
+
 			faQuestion,
 			faChartArea,
 			faBell,
@@ -61,14 +63,6 @@ export default Vue.extend({
 			.catch((e) => {
 				this.$alert(ErrorMessage(e))
 			})
-		},
-		getWakeUp: function(place: string): string | undefined {
-			return getWakeUpSession(this.placesThings[place])
-		},
-		wakeup: function(place: string): void {
-			const session = this.getWakeUp(place)
-			if (session)
-				wakeup(session)
 		},
 	},
 })

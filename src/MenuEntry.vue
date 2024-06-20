@@ -29,7 +29,7 @@ along with iDom-fe. If not, see <https://www.gnu.org/licenses/>.
 					<NotificationPermission :nh="nh" />
 				</td>
 				<td class="menu nohover">
-					<Status :status="status" :message="message" />
+					<Status :status="status" :title="message" @click="$emit('click')" />
 				</td>
 			</tr>
 		</tbody>

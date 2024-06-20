@@ -23,6 +23,9 @@ along with iDom-fe. If not, see <https://www.gnu.org/licenses/>.
 			<tbody>
 				<tr class="form-row">
 					<td class="form-col">
+						Źródło dźwięku
+					</td>
+					<td class="form-col">
 						<select v-model="audio" required :disabled="audioList.length <= 1">
 							<option v-for="audio in audioList" :key="audio" :value="audio">{{ audioLabels[audio] }}</option>
 						</select>

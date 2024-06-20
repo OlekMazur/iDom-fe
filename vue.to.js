@@ -21,11 +21,10 @@
  * along with iDom-fe. If not, see <https://www.gnu.org/licenses/>.
  */
 
-const fs = require('fs')
-const { glob } = require('glob')
-const compiler = require('vue-template-compiler')
-const transpile = require('vue-template-es2015-compiler')
-//const UglifyJS = require('uglify-js')
+import fs from 'fs'
+import { glob } from 'glob'
+import compiler from 'vue-template-compiler'
+import transpile from 'vue-template-es2015-compiler'
 
 const SRC = process.argv[2]
 const OUT = process.argv[3]

@@ -1,7 +1,7 @@
 <!--
 This file is part of iDom-fe.
 
-Copyright (c) 2018, 2019 Aleksander Mazur
+Copyright (c) 2018, 2019, 2024 Aleksander Mazur
 
 iDom-fe is free software: you can redistribute it and/or
 modify it under the terms of the GNU General Public License as
@@ -19,7 +19,7 @@ along with iDom-fe. If not, see <https://www.gnu.org/licenses/>.
 
 <div class="video">
 	<div class="video-row">
-		<SensorDeviceForm :place="place" :showPlace="true" type="devices" :id="id" :thing="data" :permissions="permissions">
+		<SensorDeviceForm :place="place" :showPlace="true" :alias="alias" type="devices" :id="id" :thing="data" :permissions="permissions">
 			<button :title="wantPlay ? 'Zatrzymaj' : 'Puść'" :disabled="wantPlay != isPlaying" @click.prevent="wantPlay = !wantPlay">
 				<div><font-awesome-icon :icon="wantPlay != isPlaying ? faSpinner : wantPlay ? faStop : faPlay" :pulse="wantPlay != isPlaying" fixed-width /></div>
 			</button>

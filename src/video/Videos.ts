@@ -27,10 +27,7 @@ import { faFastBackward } from '@fortawesome/free-solid-svg-icons/faFastBackward
 import { faStepBackward } from '@fortawesome/free-solid-svg-icons/faStepBackward'
 import { faStepForward } from '@fortawesome/free-solid-svg-icons/faStepForward'
 import { faFastForward } from '@fortawesome/free-solid-svg-icons/faFastForward'
-import { IPlacesThings, IThings, IVariables,
-	getWakeUpSession, getPermittedPlaces,
-} from '../data/Things'
-import { getVariablesIndexedByKey, wakeup } from '../data/API'
+import { IPlacesThings, IThings, IVariable, getPermittedPlaces, getVariableByKey } from '../data/Things'
 import { strToInt } from '../utils'
 import {
 	storageLoadStr, storageSaveStr,
@@ -46,27 +43,22 @@ interface IAllPlacesExcluded {
 	[place: string]: boolean
 }
 
-function getVariableIntVal(name: string, variables?: IVariables): number {
-	if (variables)
+const getVariableIntVal = (variable?: IVariable, defaultValue = NaN): number => {
+	if (variable)
 		try {
-			return strToInt(variables[name].value)
+			return strToInt(variable.value)
 		} catch (e) {
 		}
-	return NaN
+	return defaultValue
 }
 
-function getVariableTS(name: string, variables?: IVariables): number {
-	if (variables)
-		try {
-			return variables[name].ts
-		} catch (e) {
-		}
-	return NaN
+const getVariableTS = (variable?: IVariable): number => {
+	return variable && variable.ts || NaN
 }
 
 const components: { [name: string]: Component } = { VideosAtOnePlace, EditNumber, ToggleSwitch }
 declare const VARIANT: string
-if (VARIANT === 'cloud')	// if (placeSelection) doesn't terse out VideosAtAllPlaces component from build
+if (VARIANT !== 'local')	// if (placeSelection) doesn't terse out VideosAtAllPlaces component from build
 	components.VideosAtAllPlaces = VideosAtAllPlaces
 const placeSelection = VARIANT !== 'local'
 
@@ -115,27 +107,27 @@ export default Vue.extend({
 			//console.log('computed', 'selectedPlaces', this.places, result)
 			return result
 		},
-		things: function(): IThings | null | undefined {
+		things: function(): IThings | undefined {
 			//console.log('computed', 'things', this.place)
 			return this.place !== undefined && this.placesThings[this.place] || undefined
 		},
-		variables: function(): IVariables {
-			//console.log('computed', 'variables')
-			return getVariablesIndexedByKey(this.things && this.things.variables)
+		varRecMin: function(): IVariable | undefined {
+			return getVariableByKey('rec.min', this.things)
+		},
+		varRecMax: function(): IVariable | undefined {
+			return getVariableByKey('rec.max', this.things)
 		},
 		updateTS: function(): number {
-			const tsMin = getVariableTS('rec.min', this.variables)
-			const tsMax = getVariableTS('rec.max', this.variables)
+			const tsMin = getVariableTS(this.varRecMin)
+			const tsMax = getVariableTS(this.varRecMax)
 			//console.log('computed', 'updateTS', tsMin, tsMax)
 			return tsMin > tsMax ? tsMin : tsMax
 		},
 		recMin: function(): number {
-			//console.log('computed', 'recMin', getVariableIntVal('rec.min', this.variables))
-			return getVariableIntVal('rec.min', this.variables)
+			return getVariableIntVal(this.varRecMin, 1)
 		},
 		recMax: function(): number {
-			//console.log('computed', 'recMax', getVariableIntVal('rec.max', this.variables))
-			return getVariableIntVal('rec.max', this.variables)
+			return getVariableIntVal(this.varRecMax, 0)
 		},
 		minStartFrom: function(): number {
 			let result = this.recMin + this.showAtOnce - 1
@@ -222,14 +214,6 @@ export default Vue.extend({
 			if (now > this.recMax)
 				now = this.recMax
 			this.startFrom = now
-		},
-		getWakeUp: function(place: string): string | undefined {
-			return getWakeUpSession(this.placesThings[place])
-		},
-		wakeup: function(place: string): void {
-			const session = this.getWakeUp(place)
-			if (session)
-				wakeup(session)
 		},
 	},
 })

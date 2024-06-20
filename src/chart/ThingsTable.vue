@@ -1,7 +1,7 @@
 <!--
 This file is part of iDom-fe.
 
-Copyright (c) 2018, 2019, 2021 Aleksander Mazur
+Copyright (c) 2018, 2019, 2021, 2024 Aleksander Mazur
 
 iDom-fe is free software: you can redistribute it and/or
 modify it under the terms of the GNU General Public License as
@@ -25,8 +25,8 @@ along with iDom-fe. If not, see <https://www.gnu.org/licenses/>.
 			<th v-if="places.length === 1 && !places[0]" class="center"><font-awesome-icon :icon="faChartArea" fixed-width /></th>
 			<th v-else v-for="place in places" class="center">
 				<ToggleSwitch :state="placeSelect[place]" @switch="$emit('select-place', { place, value: $event })" />
-				{{ place }}
-				<span v-if="getWakeUp(place)" title="Obudź" class="button" @click="wakeup(place)">
+				{{ placesThings[place] && placesThings[place].alias }}
+				<span v-if="placesThings[place] && placesThings[place].permissions && placesThings[place].permissions.wakeup" title="Obudź" class="button" @click="wakeup(place)">
 					<font-awesome-icon :icon="faBell" fixed-width />
 				</span>
 			</th>

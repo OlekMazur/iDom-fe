@@ -1,7 +1,7 @@
 /*
  * This file is part of iDom-fe.
  *
- * Copyright (c) 2018, 2019, 2022, 2023 Aleksander Mazur
+ * Copyright (c) 2018, 2019, 2022, 2023, 2024 Aleksander Mazur
  *
  * iDom-fe is free software: you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -48,6 +48,9 @@ const xlatVariableKey: { [key: string]: string } = {
 	'sys.version': 'Wersja oprogramowania',
 	'sys.usb': 'USB',
 	'sys.dmi': 'DMI',
+	'sys.next': 'Czas do następnego raportu',
+	'sys.upgrade': 'Wynik zlecenia aktualizacji',
+	'sys.order': 'Wynik zlecenia z chmury',
 	'R': 'Stan realizacji zlecenia z chmury',
 	'smart.1': 'Odsetek błędów odczytu dysku',
 	'smart.2': 'Ogólna wydajność dysku',

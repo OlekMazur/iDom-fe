@@ -1,7 +1,7 @@
 <!--
 This file is part of iDom-fe.
 
-Copyright (c) 2020 Aleksander Mazur
+Copyright (c) 2020, 2024 Aleksander Mazur
 
 iDom-fe is free software: you can redistribute it and/or
 modify it under the terms of the GNU General Public License as
@@ -40,7 +40,7 @@ along with iDom-fe. If not, see <https://www.gnu.org/licenses/>.
 				</th>
 				<th class="vcenter">Nazwa</th>
 				<th class="center vcenter" v-for="place in places" :key="place">
-					{{ place }}
+					{{ placesThings[place] && placesThings[place].alias }}
 				</th>
 			</tr>
 		</thead>

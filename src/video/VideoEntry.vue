@@ -20,12 +20,7 @@ along with iDom-fe. If not, see <https://www.gnu.org/licenses/>.
 <div class="video">
 	<div class="video-row">
 		<span class="video-left">{{ ts }}</span>
-		<span class="video-right" v-if="cam">
-			{{ cam }}
-			<span v-if="showPlace && getWakeUp()" title="Obudź" class="button" @click="wakeup()">
-				<font-awesome-icon :icon="faBell" fixed-width />
-			</span>
-		</span>
+		<span class="video-right" v-if="cam">{{ cam }}</span>
 	</div>
 	<div class="video-row-img center big">
 		<img v-show="false" v-if="imgURL" :src="imgURL" crossorigin="anonymous" class="video" @load="imgLoaded" @error="imgFailed" @click="playPause" ref="img" />

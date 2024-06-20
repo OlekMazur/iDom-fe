@@ -1,7 +1,7 @@
 /*
  * This file is part of iDom-fe.
  *
- * Copyright (c) 2018, 2019, 2021 Aleksander Mazur
+ * Copyright (c) 2018, 2019, 2021, 2024 Aleksander Mazur
  *
  * iDom-fe is free software: you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -24,11 +24,11 @@ import { IPlacesThings, IThingsGroup, IBaseThing,
 	groupThingsByName,
 	isSensorTermostat, isSensorNotTermostat,
 	isDeviceTermostat, isDeviceOther,
-	getWakeUpSession, getPermittedPlaces,
+	getPermittedPlaces,
 } from '../data/Things'
 import { wakeup } from '../data/API'
-import { formatDate, formatTime } from '../format'
 import { getDeviceIcon, getSensorIcon, getVariableIcon } from '../style'
+import Timestamp from '../widgets/Timestamp'
 import SensorDeviceForm from './SensorDeviceForm'
 import SensorCell from './SensorCell'
 import DeviceCell from './DeviceCell'
@@ -37,19 +37,40 @@ import VariableHeader from './VariableHeader'
 import { faQuestion } from '@fortawesome/free-solid-svg-icons/faQuestion'
 import { faClock } from '@fortawesome/free-solid-svg-icons/faClock'
 import { faBell } from '@fortawesome/free-solid-svg-icons/faBell'
+import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons/faExclamationTriangle'
+
+interface ITimestampAtPlace {
+	ts?: number
+	tsSV?: number
+	next?: number
+}
+
+interface ITimestampByPlace {
+	[place: string]: ITimestampAtPlace
+}
 
 export default Vue.extend({
 	...template,
-	components: { SensorDeviceForm, SensorCell, DeviceCell, VariableCell, VariableHeader },
+	components: { Timestamp, SensorDeviceForm, SensorCell, DeviceCell, VariableCell, VariableHeader },
 	props: {
 		placesThings: Object as () => IPlacesThings,
 		termostat: Boolean as () => boolean,
 	},
 	data: function() {
+		const timestamp: ITimestampByPlace = {}
+
 		return {
+			timestamp,
+			timerID: undefined as undefined | number,
+			refreshTimestamp: {},
+			now: 0,
+
+			wakeup,
+
 			faQuestion,
 			faClock,
 			faBell,
+			faExclamationTriangle,
 		}
 	},
 	computed: {
@@ -82,6 +103,20 @@ export default Vue.extend({
 		},
 		*/
 	},
+	watch: {
+		placesThings: {
+			immediate: true,
+			handler: 'scheduleUpdateTimestamp',
+		},
+		places: {
+			immediate: true,
+			handler: 'scheduleUpdateTimestamp',
+		},
+		refreshTimestamp: {
+			immediate: true,
+			handler: 'updateTimestamp',
+		},
+	},
 	methods: {
 		getThing: function(type: TThingType, group: IThingsGroup, place: string): IBaseThing | undefined {
 			if (!group.idAt[place])
@@ -94,25 +129,49 @@ export default Vue.extend({
 				return
 			return things[group.idAt[place]]
 		},
-		formatDate: function(place: string): string {
-			const allThings = this.placesThings[place]
-			if (!allThings)
-				return ''
-			return formatDate(new Date(allThings.ts * 1000))
+		scheduleUpdateTimestamp: function() {
+			this.refreshTimestamp = {}
 		},
-		formatTime: function(place: string): string {
-			const allThings = this.placesThings[place]
-			if (!allThings)
-				return ''
-			return formatTime(new Date(allThings.ts * 1000))
+		updateTimestamp: function() {
+			const timestamp: ITimestampByPlace = {}
+			let needTimer = false
+			if (this.placesThings)
+				for (const place of this.places) {
+					const things = this.placesThings[place]
+					if (things) {
+						const tsAt: ITimestampAtPlace = {}
+						if (typeof things.ts === 'number')
+							tsAt.ts = things.ts
+						if (typeof things.tsSV === 'number')
+							tsAt.tsSV = things.tsSV / 1000
+						if (typeof things.next === 'number')
+							tsAt.next = things.next
+						if (tsAt.tsSV !== undefined && tsAt.next !== undefined)
+							needTimer = true
+						timestamp[place] = tsAt
+					}
+				}
+			//console.log('updateTimestamp', needTimer)
+			this.scheduleTimer(needTimer)
+			this.timestamp = timestamp
 		},
-		getWakeUp: function(place: string): string | undefined {
-			return getWakeUpSession(this.placesThings[place])
+		scheduleTimer: function(need: boolean): void {
+			if (need) {
+				if (this.timerID === undefined) {
+					this.now = (new Date()).getTime() / 1000
+					this.timerID = window.setTimeout(this.fireTimer, 6000)
+				}
+			} else if (this.timerID !== undefined) {
+				window.clearTimeout(this.timerID)
+				this.timerID = undefined
+			}
 		},
-		wakeup: function(place: string): void {
-			const session = this.getWakeUp(place)
-			if (session)
-				wakeup(session)
+		fireTimer: function(): void {
+			this.timerID = undefined
+			this.scheduleTimer(true)
 		},
+	},
+	destroyed: function() {
+		this.scheduleTimer(false)
 	},
 })

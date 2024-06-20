@@ -1,7 +1,7 @@
 /*
  * This file is part of iDom-fe.
  *
- * Copyright (c) 2018, 2019 Aleksander Mazur
+ * Copyright (c) 2018, 2019, 2024 Aleksander Mazur
  *
  * iDom-fe is free software: you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -19,12 +19,9 @@
 
 import template from './VideosAtOnePlace.vue.js'
 import Vue from 'vue'
-import { IThings, IDevices, IPermissions } from '../data/Things'
+import { IThings, IPermissions } from '../data/Things'
 import { IVideo } from '../data/Video'
-import {
-	VideosRegisterListener, VideosUnregisterListener,
-	getThingsIndexedByName,
-} from '../data/API'
+import { VideosRegisterListener, VideosUnregisterListener } from '../data/API'
 import VideoEntry from './VideoEntry'
 
 interface IVideoIndex {
@@ -58,10 +55,6 @@ export default Vue.extend({
 		}
 	},
 	computed: {
-		devices: function(): IDevices {
-			//console.log('computed', 'devices')
-			return getThingsIndexedByName(this.things && this.things.devices) as IDevices
-		},
 		permissions: function(): IPermissions | null | undefined {
 			//console.log('computed', 'permissions', this.place)
 			return this.things && this.things.permissions || undefined

@@ -17,8 +17,7 @@
  * along with iDom-fe. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { DataProvider } from '../Provider'
-import { IDataListener } from '../API'
+import { DataProvider, IDataListener } from '../Provider'
 import { QueryGet, CheckResponse, AutoParseResponse } from '../Client'
 
 export type DataProcessorCallback = (data: string | object) => object

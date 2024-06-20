@@ -17,6 +17,6 @@ You should have received a copy of the GNU General Public License
 along with iDom-fe. If not, see <https://www.gnu.org/licenses/>.
 -->
 
-<a href="#" v-if="icon" :title="title" :class="style" @click.prevent="click">
+<a href="#" v-if="icon" :title="title" :class="style" @click.prevent="$emit('click')">
 	<font-awesome-icon v-if="icon" :icon="icon" :pulse="pulse" size="lg" fixed-width />
 </a>

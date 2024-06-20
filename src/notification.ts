@@ -1,7 +1,7 @@
 /*
  * This file is part of iDom-fe.
  *
- * Copyright (c) 2023 Aleksander Mazur
+ * Copyright (c) 2023, 2024 Aleksander Mazur
  *
  * iDom-fe is free software: you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -18,7 +18,8 @@
  */
 
 import { IThings } from './data/Things'
-import { getVariablesIndexedByKey } from './data/API'
+import { getVariableByKey } from './data/Things'
+import { getVideoTNURL } from './data/API'
 import { strToInt } from './utils'
 import { storageLoadStr } from './storage'
 
@@ -53,15 +54,21 @@ export class NotificationHub {
 	})
 
 	public readonly updateThings = (place: string, things: IThings) => {
-		let current = NaN
-		try {
-			current = strToInt(getVariablesIndexedByKey(things && things.variables)['rec.max'].value)
-		} catch (e) {
-			current = NaN
+		let value = getVariableByKey('rec.max', things)?.value
+		let recMax = NaN
+		if (value !== undefined)
+			try {
+				recMax = strToInt(value)
+			} catch (e) {
+				recMax = NaN
+			}
+		if (this.granted && !isNaN(recMax) && place in this.prev && this.prev[place] !== recMax) {
+			new Notification('Dom inteligentny inaczej' + (things.alias ? ' @' + things.alias : ''), {
+				body: '#' + recMax + ' się nagrał',
+				icon: getVideoTNURL(place, recMax, 1),
+				tag: place + '.recMax',
+			})
 		}
-		if (this.granted && place in this.prev && this.prev[place] !== current) {
-			new Notification(`@${place} = ${current}`)
-		}
-		this.prev[place] = current
+		this.prev[place] = recMax
 	}
 }

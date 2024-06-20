@@ -20,7 +20,7 @@
 import template from './DeviceCell.vue.js'
 import Vue from 'vue'
 import DeviceButton from './DeviceButton'
-import Timestamp from './Timestamp'
+import Timestamp from '../widgets/Timestamp'
 import { IDevice } from '../data/Things'
 
 export default Vue.extend({
@@ -32,12 +32,5 @@ export default Vue.extend({
 		ts: Number as () => number,
 		thing: Object as () => IDevice,
 		switchable: Boolean as () => boolean,
-	},
-	computed: {
-		style: function(): string {
-			if (!this.thing)
-				return ''
-			return !this.thing.state && this.thing.name && this.thing.name.split('/')[0] === 'termostat' ? 'blink' : ''
-		},
 	},
 })

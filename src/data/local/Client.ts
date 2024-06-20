@@ -18,5 +18,5 @@
  */
 
 export function LocalErrorMessage(e: Error) {
-	return e ? e.toString().split('\n')[0] : ''
+	return e ? e.toString().split('\n', 1)[0] : ''
 }

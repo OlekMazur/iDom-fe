@@ -28,12 +28,16 @@ export default Vue.extend({
 	components: { ToggleSwitch },
 	props: {
 		syslog: Object as () => ILogFile,
+		ordered: Boolean as () => boolean,
 		permissionToOrder: Boolean as () => boolean,
 		place: String as () => string,
 	},
 	computed: {
 		size: function() {
 			return formatNumberWithUnit(this.syslog.size, 'B', 1024)
+		},
+		isOrdered: function() {
+			return this.ordered || this.syslog?.order
 		},
 	},
 	methods: {

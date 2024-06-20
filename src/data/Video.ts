@@ -1,7 +1,7 @@
 /*
  * This file is part of iDom-fe.
  *
- * Copyright (c) 2018, 2019 Aleksander Mazur
+ * Copyright (c) 2018, 2019, 2024 Aleksander Mazur
  *
  * iDom-fe is free software: you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -19,15 +19,24 @@
 
 /*------------------------------------*/
 
+/** An interface describing single video recording. */
 export interface IVideo {
+	/** Number of the recording. */
 	no: number
+	/** File extension, starting with a dot. */
 	ext: string
+	/** File size, in bytes. */
 	size: number
+	/** Timestamp of the recording (e.g. file modification time), in seconds since Epoch. */
 	ts: number
+	/** ID of a device which recorded the video. If given, it should match some key of IThings.devices. */
 	cam?: string
+	/** Number of thumbnails already available. */
 	hasTN?: number
+	/** Number of wanted thumbnails. */
 	wantTN?: number
-	order?: string
+	/** Whether current user has already put an order to get this video. */
+	order?: boolean
 }
 
 /*------------------------------------*/

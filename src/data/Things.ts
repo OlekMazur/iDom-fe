@@ -1,7 +1,7 @@
 /*
  * This file is part of iDom-fe.
  *
- * Copyright (c) 2018, 2019, 2020, 2021, 2022 Aleksander Mazur
+ * Copyright (c) 2018, 2019, 2020, 2021, 2022, 2024 Aleksander Mazur
  *
  * iDom-fe is free software: you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -18,7 +18,8 @@
  */
 
 import { IconDefinition } from '@fortawesome/fontawesome-common-types'
-import { IDataListener, getThingsIndexedByName } from './API'
+import { IDataListener } from './Provider'
+import { getThingsIndexedByName } from './API'
 import { orderByNameAsc, orderByUnitImportance } from '../sort'
 
 /*------------------------------------*/
@@ -59,8 +60,8 @@ export interface ISensors {
 
 export interface IDevice extends IBaseNamedThingWithAlias {
 	state: boolean
-	want?: boolean
 	color?: string
+	want?: boolean
 }
 
 export interface IDevices {
@@ -109,122 +110,49 @@ export interface INeighbours {
 
 /*------------------------------------*/
 
-export interface IGenericParams {
-	[name: string]: string
-}
-
-export interface IReverseRequestFile {
-	cksum: string
-	ts: number
-	error?: string
-}
-
-export interface IReverseRequestFiles {
-	[name: string]: IReverseRequestFile
-}
-
-export interface IReverseRequest {
-	/** Timestamp of last communication. */
-	ts?: number
-	/** Type of currently performed request. */
-	type?: string
-	data?: object
-	/** Whether to synchronize list of recordings (things/$place/video). */
-	recListSync?: boolean
-	/** Minimal number of recording present under things/$place/video. */
-	recMin?: number
-	/** Maximal number of recording present under things/$place/video. */
-	recMax?: number
-	/** Whether to synchronize TNs of recordings; 0-based index of latest TN to upload to the cloud storage. */
-	maxTN?: number
-	/** How many TNs to request at once (in one reverse request). If not set, defaults to 1 like legacy code used to work. */
-	maxTNAtOnce?: number
-	/** true if it is likely that at least one "things/$place/video/$no/order" is true. */
-	order?: boolean
-	/** true if it is likely that at least one "things/$place/video/$no/wantTN" is true. */
-	wantTN?: boolean
-	/** Pending generic requests (by current user only). */
-	generic?: {
-		[generic: string]: boolean | IGenericParams,
-	},
-	/** State of upgrade process. */
-	upgradeState?: string
-	/** URL of upgrade image (kernel.enc). */
-	upgradeSrc?: string
-	/** Destination of the upgrade at terminal's filesystem. */
-	upgradeDst?: string
-	/** Checksum of the upgrade image (after unwrapping). */
-	upgradeCksum?: string
-	/** Expected value of "sys.version" variable after successful upgrade. */
-	upgradeVersion?: string
-	/** Key of wake up event stream, under "wakeup" path. */
-	wakeup?: string
-	/** Timestamp of starting wake up event stream under current key. */
-	wakeupStarted?: number
-	/** Whether to synchronize list of logs (things/$place/logs). */
-	logListSync?: boolean
-	/** Timestamp of last synchronization of logs (value of "sys.boot" variable). */
-	logListSyncTS?: number
-	/** Status of synchronization of files in the cloud. */
-	file?: IReverseRequestFiles
-}
-
-/*------------------------------------*/
-
 export interface IPermissions {
 	things?: boolean
 	history?: boolean
 	historyWrite?: boolean
 	tn?: boolean
-	maxTN?: boolean
+	wantTN?: boolean
 	recListSync?: boolean
 	video?: boolean
 	order?: boolean
 	device?: boolean
 	variable?: boolean
-	generic?: {
-		[name: string]: boolean,
-	},
-	upgrade?: {
-		[name: string]: boolean,
-	},
 	color?: boolean
 	logs?: boolean
-	orderLog?: boolean
-	logListSync?: boolean
+	logsSync?: boolean
+	rename?: boolean
+	remove?: boolean
 	wakeup?: boolean
-
-	useWakeup?: boolean
+	upgrade?: boolean
+	post?: {
+		[cgi: string]: boolean
+	}
 }
 
 /*------------------------------------*/
+
+export interface IMappingID {
+	[id: string]: string
+}
 
 export type TThingType = 'sensors' | 'devices' | 'variables' | 'neighbours'
 
 export interface IThings {
-	ts: number
+	ts: number					/**< Base timestamp of the data dump. */
+	tsSV?: number				/**< Timestamp of last contact with server (if applicable). */
+	alias?: string				/**< Name of the place. */
+	next?: number				/**< Value of "sys.next" variable. */
 	sensors: ISensors
 	devices: IDevices
 	variables: IVariables
+	varByKey?: IMappingID		/**< Mapping of variables[id].key to id. Can be undefined if the mapping is 1:1 (keys are IDs). */
 	messages: IMessages
 	neighbours: INeighbours
-	request?: IReverseRequest
 	permissions?: IPermissions
-}
-
-/*------------------------------------*/
-
-/**
- * Gets wake-up session suitable for passing to @ref wakeup API function,
- * or undefined if such session is unavailable or user has no permission
- * to use it.
- *
- * @param things Things data (at particular place).
- * @return Wake-up session, or undefined if cannot wake up terminal at that place.
- */
-export function getWakeUpSession(things: IThings | null | undefined): string | undefined {
-	return things && things.permissions && things.permissions.useWakeup
-		&& things.request && things.request.wakeup || undefined
 }
 
 /*------------------------------------*/
@@ -444,7 +372,7 @@ const TERMOSTAT = [
 ]
 
 export function isSensorTermostat(sensor: ISensor) {
-	return sensor.name && TERMOSTAT.includes(sensor.name.split('/')[0])
+	return sensor.name && TERMOSTAT.includes(sensor.name.split('/', 1)[0])
 }
 
 export function isSensorNotTermostat(sensor: ISensor) {
@@ -456,7 +384,7 @@ export function isDeviceTermostat(device: IDevice) {
 		return false
 	if (device.name[0] === '#')
 		return true
-	const group = device.name.split('/')[0]
+	const group = device.name.split('/', 1)[0]
 	return (group === 'termostat' && !device.state) || TERMOSTAT.includes(group)
 }
 
@@ -465,7 +393,7 @@ export function isDeviceOther(device: IDevice) {
 		return true
 	if (device.name[0] === '#')
 		return false
-	const group = device.name.split('/')[0]
+	const group = device.name.split('/', 1)[0]
 	return !TERMOSTAT.includes(group)
 }
 
@@ -586,3 +514,28 @@ export function describeSensor(mapping: ITermosMapping | undefined, id: string):
 	}
 	return id
 }
+
+/*------------------------------------*/
+
+export function getVariableIDByKey(key: string, things?: IThings): string | undefined {
+	return things ? (things.varByKey ? things.varByKey[key] : key) : undefined
+}
+
+export function getVariableByKey(key: string, things?: IThings): IVariable | undefined {
+	const id = getVariableIDByKey(key, things)
+	return id && things?.variables[id] || undefined
+}
+
+/**
+ * Can be used to create IThings.varByKey from IThings.variables in most generic way.
+ */
+export function generateVarByKey(variables?: IVariables): IMappingID {
+	const result: IMappingID = {}
+	if (variables)
+		for (const id of Object.keys(variables))
+			if (variables[id].key)
+				result[variables[id].key] = id
+	return result
+}
+
+/*------------------------------------*/
