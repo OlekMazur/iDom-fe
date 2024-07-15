@@ -79,7 +79,8 @@ function neighbourUpdate(
 		nd.permissions = permissions
 	}
 
-	for (const meta of thing.info.split(';')) {
+	const info = thing.info || ''
+	for (const meta of info.split(';')) {
 		const split = meta.indexOf('=')
 		const name = meta.slice(0, split)
 		if (!nd.props[name] || nd.props[name].ts < thing.ts)

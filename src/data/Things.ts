@@ -100,8 +100,8 @@ export type IMessages = IMessage[]
 /*------------------------------------*/
 
 export interface INeighbour extends IBaseNamedThingWithAlias {
-	state: boolean
-	info: string
+	state?: boolean
+	info?: string
 }
 
 export interface INeighbours {
