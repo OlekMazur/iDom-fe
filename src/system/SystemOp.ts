@@ -1,7 +1,7 @@
 /*
  * This file is part of iDom-fe.
  *
- * Copyright (c) 2018, 2019, 2021, 2022 Aleksander Mazur
+ * Copyright (c) 2018, 2019, 2021, 2022, 2025 Aleksander Mazur
  *
  * iDom-fe is free software: you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -20,6 +20,7 @@
 import template from './SystemOp.vue.js'
 import Vue from 'vue'
 import { IconDefinition } from '@fortawesome/fontawesome-common-types'
+import { IArgs } from '../data/Client'
 
 export interface IOperationData {
 	icon: IconDefinition
@@ -28,12 +29,13 @@ export interface IOperationData {
 	question?: string
 	//success: string
 	failure: string
+	op: string
+	args?: IArgs
 }
 
 export default Vue.extend({
 	...template,
 	props: {
-		op: String as () => string,
 		disabled: Boolean as () => boolean,
 		data: Object as () => IOperationData,
 	},

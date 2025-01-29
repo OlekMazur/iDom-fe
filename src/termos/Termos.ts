@@ -248,7 +248,7 @@ export default Vue.extend({
 			}
 			fr.readAsArrayBuffer(elem.files[0])
 		},
-		compile: function(): Uint8Array | undefined {
+		compile: function() {
 			try {
 				return termosCompile(this.termos)
 			} catch (e) {

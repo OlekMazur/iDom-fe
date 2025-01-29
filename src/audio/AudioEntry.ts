@@ -57,7 +57,7 @@ function channelsLoad(): number[] {
 		const str = storageLoadStr(STORAGE_KEY)
 		if (str)
 			return channelsImport(str.split(','))
-	} catch (e) {
+	} catch (_e) {
 	}
 	return []
 }
@@ -175,7 +175,7 @@ export default Vue.extend({
 	},
 	computed: {
 		audioURL: function(): string {
-			return this.caps && this.caps.port && this.urlSfx ? localAudioStreamURL(this.caps.port) + this.urlSfx : ''
+			return this.audio && this.urlSfx ? localAudioStreamURL(this.audio) + this.urlSfx : ''
 		},
 		audioList: function(): string[] {
 			const result: string[] = []

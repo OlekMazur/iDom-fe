@@ -1,7 +1,7 @@
 <!--
 This file is part of iDom-fe.
 
-Copyright (c) 2018, 2019, 2021, 2022 Aleksander Mazur
+Copyright (c) 2018, 2019, 2021, 2022, 2025 Aleksander Mazur
 
 iDom-fe is free software: you can redistribute it and/or
 modify it under the terms of the GNU General Public License as
@@ -55,14 +55,14 @@ along with iDom-fe. If not, see <https://www.gnu.org/licenses/>.
 		<Services :data="system.services" :uptime="system.uptime" />
 	</div>
 	<form v-if="system">
-		<SystemOp v-for="(data, op) in SystemOperations" :key="op" :op="op" :data="data" :disabled="working" @perform="perform" />
+		<SystemOp v-for="(data, op) in SystemOperations" :key="op" :data="data" :disabled="working" @perform="perform" />
 	</form>
 	<form v-if="system" ref="upgradeForm">
 		<button type="button" class="button-on form-col" @click.prevent="upgradeButton" :disabled="working">
 			<font-awesome-icon :icon="faUpload" />
 			Aktualizuj oprogramowanie
 		</button>
-		<SystemOp v-for="(data, op) in UpgradeOperations" :key="op" :op="op" :data="data" :disabled="working" @perform="perform" />
+		<SystemOp v-for="(data, op) in UpgradeOperations" :key="op" :data="data" :disabled="working" @perform="perform" />
 		<input ref="upgradeFile" type="file" name="image" hidden accept=".img" @change="upgradeClick($event.target)" />
 	</form>
 </div>

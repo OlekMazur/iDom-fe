@@ -37,17 +37,9 @@ import Lease from './Lease'
 import Printers from './Printers'
 import SystemOp, { IOperationData } from './SystemOp'
 
-interface IOperations {
-	[op: string]: IOperationData
-}
-
-interface IOperationInfo {
-	op: string
-	data: IOperationData
-}
-
-const SystemOperations: IOperations = {
-	'kill-internet': {
+const SystemOperations: IOperationData[] = [
+	{
+		op: 'kill-internet',
 		icon: faShuffle,
 		clazz: 'button-delete',
 		label: 'Restartuj połączenie internetowe',
@@ -55,14 +47,16 @@ const SystemOperations: IOperations = {
 		//success: 'Internet ubity; obserwuj odradzanie się połączenia.',
 		failure: 'Nie udało się ubić internetu',
 	},
-	'reset-modem': {
+	{
+		op: 'reset-modem',
 		icon: faBoltLightning,
 		clazz: 'button-delete',
 		label: 'Resetuj modem',
 		question: 'Czy na pewno chcesz zresetować modem, co jest równoznaczne z nagłym odłączeniem włożonej weń karty pamięci, na której być może właśnie trwa zapis?',
 		failure: 'Nie udało się zresetować modemu',
 	},
-	'reboot': {
+	{
+		op: 'reboot',
 		icon: faRepeat,
 		clazz: 'button-delete',
 		label: 'Restartuj system',
@@ -70,14 +64,16 @@ const SystemOperations: IOperations = {
 		//success: 'System rozpoczął restart. Może to zająć minutę albo dwie.',
 		failure: 'Nie udało się zrestartować systemu',
 	},
-	'force-uplink': {
+	{
+		op: 'force-uplink',
 		icon: faCloudUploadAlt,
 		label: 'Gadaj z chmurą',
 		question: 'Czy na pewno chcesz wymusić połączenie z serwerem chmury?',
 		//success: 'System rozpoczyna komunikację z serwerem chmury. Serwer powinien niebawem odnotować połączenie.',
 		failure: 'Nie udało się wymusić połączenia z serwerem chmury',
 	},
-	'force-backup': {
+	{
+		op: 'force-backup',
 		icon: faSave,
 		label: 'Zapisz bazę danych',
 		question: 'Czy na pewno chcesz wymusić zapisanie bazy danych na lokalnym nośniku?\n'
@@ -85,23 +81,28 @@ const SystemOperations: IOperations = {
 		//success: 'System rozpoczyna zapis na dysku. Baza danych powinna zostać niebawem zapisana.',
 		failure: 'Nie udało się zapisać bazy danych na dysku',
 	},
-}
+]
 
-const UpgradeOperations: IOperations = {
-	'reboot?to=upgrade': {
+const UpgradeOperations: IOperationData[] = [
+	{
+		op: 'reboot',
+		args: {
+			to: 'upgrade',
+		},
 		icon: faRepeat,
 		clazz: 'button-delete',
 		label: 'Restartuj do nowej wersji',
 		question: 'Czy na pewno chcesz zrestartować system i uruchomić nową wersję na próbę?',
 		failure: 'Nie udało się zrestartować systemu',
 	},
-	'finish-upgrade': {
+	{
+		op: 'finish-upgrade',
 		icon: faSave,
 		label: 'Zatwierdź nową wersję na stałe',
 		question: 'Czy na pewno chcesz zatwierdzić nową wersję do uruchamiania domyślnie?',
 		failure: 'Nie udało się zatwierdzić nowej wersji',
 	},
-}
+]
 
 export default Vue.extend({
 	...template,
@@ -118,14 +119,12 @@ export default Vue.extend({
 		}
 	},
 	methods: {
-		perform: function(info: IOperationInfo) {
-			const { op, data } = info
-
+		perform: function(data: IOperationData) {
 			if (data.question && !confirm(data.question))
 				return
 
 			this.working = true
-			QueryPost('/cgi-bin/' + op)
+			QueryPost('/cgi-bin/' + data.op, data.args)
 			.then(ExpectResponseEmpty)
 			//.then(() => this.$alert(data.success))
 			.catch((e) => this.$alert(data.failure + '\n\n' + ErrorMessage(e)))

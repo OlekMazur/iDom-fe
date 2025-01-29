@@ -28,6 +28,9 @@ export default tseslint.config(
 			'vue/no-mutating-props': ['warn'],	// TODO
 			'vue/no-reserved-component-names': ['warn'],	// TODO
 			*/
+			'@typescript-eslint/no-unused-vars': ['error', {
+				"caughtErrorsIgnorePattern": "^_",
+			}],
 		},
 	},
 )

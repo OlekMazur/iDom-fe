@@ -41,6 +41,7 @@ const xlatVariableKey: { [key: string]: string } = {
 	'modem.power': 'Zasilanie modemu',
 	'rec.min': 'Numer najstarszego nagrania',
 	'rec.max': 'Numer najnowszego nagrania',
+	'rec.cur': 'Numer trwającego nagrania',
 	'sim.iccid': 'Numer ICCID karty SIM',
 	'sim.imsi': 'Numer IMSI karty SIM',
 	'sim.pin': 'Status PIN karty SIM',

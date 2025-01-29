@@ -41,8 +41,7 @@ along with iDom-fe. If not, see <https://www.gnu.org/licenses/>.
 				<span :title="play ? 'Zatrzymaj' : 'Odtwarzaj'" class="button" @click="playPause">
 					<font-awesome-icon :icon="play ? faPlay : faPause" fixed-width />
 				</span>
-				<EditNumber v-if="frame !== undefined && video.hasTN" v-model="frame" :min="0" :max="video.hasTN" title="Numer widocznej lub pobieranej klatki" />
-				<span v-else-if="frame !== undefined" title="Numer widocznej lub pobieranej klatki">{{ frame }}</span>
+				<EditNumber v-if="frame !== undefined" v-model="frame" :min="0" :max="video.hasTN" title="Numer widocznej lub pobieranej klatki" />
 				<template v-if="video.hasTN !== undefined"> / {{ video.hasTN }}</template>
 				<span v-if="video.wantTN" title="Anuluj pobieranie następnych klatek" class="button" @click="setWantTN(false)">
 					<font-awesome-icon :icon="faHandPaper" fixed-width />

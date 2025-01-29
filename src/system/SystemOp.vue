@@ -19,7 +19,7 @@ along with iDom-fe. If not, see <https://www.gnu.org/licenses/>.
 
 <button	type="button" class="form-col" :class="data.clazz || ''"
 	:disabled="disabled"
-	@click.prevent="disabled ? undefined : $emit('perform', { op, data })"
+	@click.prevent="disabled ? undefined : $emit('perform', data)"
 >
 	<font-awesome-icon :icon="data.icon" />
 	{{ data.label }}

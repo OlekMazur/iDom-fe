@@ -1,7 +1,7 @@
 /*
  * This file is part of iDom-fe.
  *
- * Copyright (c) 2018, 2019, 2020, 2021, 2023 Aleksander Mazur
+ * Copyright (c) 2018, 2019, 2020, 2021, 2023, 2025 Aleksander Mazur
  *
  * iDom-fe is free software: you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -61,7 +61,7 @@ export function QueryPost(url: string, args?: IArgs): Promise<Response> {
 	return fetch(url, options)
 }
 
-function QueryPostData(url: string, data: ArrayBuffer | FormData, ct?: string): Promise<Response> {
+function QueryPostData(url: string, data: ArrayBuffer | FormData | string, ct?: string): Promise<Response> {
 	const options = newCommonFetchOptions()
 	options.method = 'POST'
 	options.body = data
@@ -76,7 +76,7 @@ export function QueryPostBinary(url: string, data: ArrayBuffer): Promise<Respons
 	return QueryPostData(url, data, 'application/octet-stream')
 }
 
-export function QueryPostForm(url: string, data: FormData): Promise<Response> {
+export function QueryPostForm(url: string, data: FormData | string): Promise<Response> {
 	return QueryPostData(url, data)
 }
 
@@ -102,20 +102,17 @@ export function AutoParseResponse(response: Response): Promise<string | object> 
 	return type === 'json' ? response.json() : response.text()
 }
 
-function ExpectResponseText(response: Response, value: string) {
-	CheckResponse(response, 'text/plain')
+export function ExpectResponseEmpty(response: Response) {
+	CheckResponse(response)
 	return response.text()
 	.then((text) => {
-		if (text === value)
+		if (text === '')
 			return
+		let type = response.headers.get(CONTENT_TYPE)
+		if (type)
+			type = type.split(';', 1)[0]
+		if (!type || type !== 'text/plain')
+			throw new Error('Zła odpowiedź serwera')
 		throw new Error(text)
 	})
-}
-
-export function ExpectResponseZero(response: Response) {
-	return ExpectResponseText(response, '0\n')
-}
-
-export function ExpectResponseEmpty(response: Response) {
-	return ExpectResponseText(response, '')
 }

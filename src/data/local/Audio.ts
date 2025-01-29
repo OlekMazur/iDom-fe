@@ -1,7 +1,7 @@
 /*
  * This file is part of iDom-fe.
  *
- * Copyright (c) 2018, 2019, 2020 Aleksander Mazur
+ * Copyright (c) 2018, 2019, 2020, 2024, 2025 Aleksander Mazur
  *
  * iDom-fe is free software: you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -18,7 +18,7 @@
  */
 
 import { DataStatus } from '../Provider'
-import { IAudios, IAudiosListener } from '../Audio'
+import { IAudios, IAudiosListener, isIAudios } from '../Audio'
 import { IArgs, QueryGet, QueryPost, ExpectResponseEmpty, CheckResponse } from '../Client'
 import { PollingFetcher, IPollingListener } from './PollingFetcher'
 
@@ -51,10 +51,15 @@ class LocalAudiosListener implements IPollingListener {
 	}
 
 	public readonly dataChanged = (data: string | object) => {
-		if (typeof data !== 'object') {
-			return
+		if (typeof data == 'object')
+			for (const prop of ['playback', 'record'])
+				if (typeof (data as any)[prop] == 'string')
+					(data as any)[prop] = {}
+		const result = isIAudios(data) ? data : {
+			record: {},
+			playback: {},
 		}
-		this.audiosListener.audiosChanged(data as IAudios)
+		this.audiosListener.audiosChanged(result)
 	}
 }
 
@@ -100,6 +105,6 @@ export function localAudioCtl(audio: string, op: string, arg?: string): Promise<
 	.then(ExpectResponseEmpty)
 }
 
-export function localAudioStreamURL(port: number): string {
-	return `http://${location.hostname}:${port}/cgi-bin/audio.wav`
+export function localAudioStreamURL(audio: string): string {
+	return `/audio/streamer.${audio}c.wav`
 }

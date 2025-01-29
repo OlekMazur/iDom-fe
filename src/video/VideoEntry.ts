@@ -56,11 +56,9 @@ export default Vue.extend({
 
 			frame: undefined as undefined | number,
 			imgURL: '',
-			imgURLCached: false,
 			play: false,
 			timeoutID: undefined as undefined | number,
 			imgReady: false,
-			//tryIdx: 0,
 		}
 	},
 	computed: {
@@ -121,22 +119,10 @@ export default Vue.extend({
 				this.loadNext()
 		},
 		loadImage: function(): void {
-			//this.tryIdx = 0
-			this.loadImageRetry()
-		},
-		loadImageRetry: function(): void {
 			if (this.frame === undefined)
 				return
-			//console.log('loadImage', this.place, this.video.no, this.frame, skipCache)
-			/*
-			getVideoTNURL(this.place, this.video.no, this.frame, this.tryIdx)
-			.then((cachedURL) => {
-				this.imgURLCached = cachedURL.cached
-				this.imgURL = cachedURL.url
-			}).catch(this.rewind)
-			*/
+			//console.log('loadImage', this.place, this.video.no, this.frame)
 			this.imgURL = getVideoTNURL(this.place, this.video.no, this.frame)
-			// imgURLCached no longer used
 		},
 		imgLoaded: function(): void {
 			//console.log('imgLoaded', this.frame)
@@ -151,14 +137,7 @@ export default Vue.extend({
 		imgFailed: function(): void {
 			//console.log('imgFailed', this.frame)
 			this.imgURL = ''
-			if (this.imgURLCached) {
-				// retry skipping cache
-				//this.tryIdx++
-				this.loadImageRetry()
-			} else {
-				// rewind
-				this.rewind()
-			}
+			this.rewind()
 		},
 		rewind: function(): void {
 			//console.log('rewind', this.frame)

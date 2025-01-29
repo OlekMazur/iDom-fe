@@ -1,7 +1,7 @@
 /*
  * This file is part of iDom-fe.
  *
- * Copyright (c) 2019, 2020, 2022 Aleksander Mazur
+ * Copyright (c) 2019, 2020, 2022, 2025 Aleksander Mazur
  *
  * iDom-fe is free software: you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -47,16 +47,27 @@ export interface IRecordDevices {
 	[name: string]: IRecordCaps
 }
 
+const isIRecordDevices = (x: unknown): x is IRecordDevices => !!x
+	&& typeof x == 'object'
+
 export type IPlaybackCaps = IAudioCaps
 
 export interface IPlaybackDevices {
 	[name: string]: IPlaybackCaps
 }
 
+const isIPlaybackDevices = (x: unknown): x is IPlaybackDevices => !!x
+	&& typeof x == 'object'
+
 export interface IAudios {
 	record: IRecordDevices
 	playback: IPlaybackDevices
 }
+
+export const isIAudios = (x: unknown): x is IAudios => !!x
+	&& typeof x == 'object'
+	&& isIRecordDevices((x as IAudios).record)
+	&& isIPlaybackDevices((x as IAudios).playback)
 
 /*------------------------------------*/
 

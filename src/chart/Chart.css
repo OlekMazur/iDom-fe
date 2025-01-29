@@ -1,7 +1,7 @@
 /*
  * This file is part of iDom-fe.
  *
- * Copyright (c) 2014, 2015, 2016, 2018, 2019 Aleksander Mazur
+ * Copyright (c) 2014, 2015, 2016, 2018, 2019, 2025 Aleksander Mazur
  *
  * iDom-fe is free software: you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -35,8 +35,8 @@ line {
 }
 
 .chart-unit {
-	text-anchor: left;
-	dominant-baseline: bottom;
+	text-anchor: start;
+	dominant-baseline: auto;
 	font-weight: bold;
 }
 

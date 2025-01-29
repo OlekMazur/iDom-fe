@@ -1,7 +1,7 @@
 /*
  * This file is part of iDom-fe.
  *
- * Copyright (c) 2017, 2018, 2019, 2021, 2022, 2023 Aleksander Mazur
+ * Copyright (c) 2017, 2018, 2019, 2021, 2022, 2023, 2025 Aleksander Mazur
  *
  * iDom-fe is free software: you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -422,7 +422,7 @@ function saveTimerProgram(data: Uint8Array, offset: number, program: ITermosTime
 	}
 }
 
-export function termosCompile(termos: ITermos): Uint8Array {
+export function termosCompile(termos: ITermos): ArrayBuffer {
 
 	if (termos.functions.length >= 0x10)
 		throw new Error(termos.functions.length + ' funkcji czujników to za dużo, maksymalnie może być 15')
@@ -437,7 +437,8 @@ export function termosCompile(termos: ITermos): Uint8Array {
 	if (programOffset + programsLen > 0x100)
 		throw new Error('Nastawy za długie: ' + programOffset + ' + ' + programsLen +
 			' = ' + (programOffset + programsLen) + ' B, a pamięć ma 256 B')
-	const data = new Uint8Array(programOffset + programsLen)
+	const buffer = new ArrayBuffer(programOffset + programsLen)
+	const data = new Uint8Array(buffer)
 
 	const offsets: IProgramNumbers = allocPrograms(termos, programOffset)
 	const refered: IIsProgramRefered = {}
@@ -484,7 +485,7 @@ export function termosCompile(termos: ITermos): Uint8Array {
 				throw new Error('Brak odwołań do programu dobowego czasowego ' + id)
 			else
 				saveTimerProgram(data, offsets[id], termos.timerPrograms[id])
-	return data
+	return buffer
 }
 
 /* ---------------------------------- */

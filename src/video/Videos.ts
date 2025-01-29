@@ -47,7 +47,7 @@ const getVariableIntVal = (variable?: IVariable, defaultValue = NaN): number => 
 	if (variable)
 		try {
 			return strToInt(variable.value)
-		} catch (e) {
+		} catch (_e) {
 		}
 	return defaultValue
 }

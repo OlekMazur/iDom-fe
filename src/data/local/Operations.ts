@@ -1,7 +1,7 @@
 /*
  * This file is part of iDom-fe.
  *
- * Copyright (c) 2018, 2019, 2021, 2024 Aleksander Mazur
+ * Copyright (c) 2018, 2019, 2021, 2024, 2025 Aleksander Mazur
  *
  * iDom-fe is free software: you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -31,7 +31,6 @@ const thingTypeXlat: { [type: string]: string } = {
 
 export function localSwitchDevice(place: string, name: string, want: boolean): Promise<void> {
 	return QueryPost('/cgi-bin/termostat-switch', {
-		type: thingTypeXlat.devices,
 		name,
 		value: want ? '1' : '0',
 	}).then(ExpectResponseEmpty)
