@@ -135,10 +135,9 @@ export class API1ThingsProvider extends DataProvider {
 			const place = things.places[id]
 			if (!place.sensors && !place.devices && !place.variables)
 				continue
-			const lastIO = findMaxLastIO(place.sessions)
 			this.thingsListener.placeAdded(id)
 			const result: IThings = {
-				ts: lastIO || Date.now() / 1000,
+				ts: findMaxLastIO(place.sessions),
 				alias: place.name,
 				sensors: mapThings(place.sensors, mapSensor),
 				devices: mapThings(place.devices, mapDevice),
@@ -154,6 +153,16 @@ export class API1ThingsProvider extends DataProvider {
 				},
 			}
 			result.varByKey = generateVarByKey(result.variables)
+			if (!result.ts) {
+				const sysNextID = result.varByKey['sys.next']
+				if (sysNextID) {
+					const sysNext = result.variables[sysNextID].ts
+					if (sysNext)
+						result.ts = sysNext
+				}
+			}
+			if (!result.ts)
+				result.ts = Date.now() / 1000
 			this.thingsListener.thingsChanged(id, result)
 		}
 
