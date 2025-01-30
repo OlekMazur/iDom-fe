@@ -1,7 +1,7 @@
 /*
  * This file is part of iDom-fe.
  *
- * Copyright (c) 2018, 2019, 2022 Aleksander Mazur
+ * Copyright (c) 2018, 2019, 2022, 2025 Aleksander Mazur
  *
  * iDom-fe is free software: you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -27,6 +27,7 @@ import { faBoltLightning } from '@fortawesome/free-solid-svg-icons/faBoltLightni
 import { faFilm } from '@fortawesome/free-solid-svg-icons/faFilm'
 import { faFileExport } from '@fortawesome/free-solid-svg-icons/faFileExport'
 import { faGlobe } from '@fortawesome/free-solid-svg-icons/faGlobe'
+import { faMicrochip } from '@fortawesome/free-solid-svg-icons/faMicrochip'
 import { ISystemInfoMedium } from '../data/System'
 import { formatNumberWithUnit } from '../format'
 
@@ -46,6 +47,7 @@ const mediumFuncIcon: { [name: string]: IconDefinition } = {
 	'dvr-copy': faFileExport,
 	'system': faDatabase,
 	'internet': faGlobe,
+	'firmware': faMicrochip,
 }
 
 function mapMount2Func(name: string): IMediumFunc {
