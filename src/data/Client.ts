@@ -38,7 +38,7 @@ function newCommonFetchOptions(): RequestInit {
 		mode: 'same-origin',
 		//cache: 'reload',
 		redirect: 'error',
-		keepalive: true,
+		//keepalive: true,	"The body size for keepalive requests is limited to 64 kibibytes."
 	}
 }
 
