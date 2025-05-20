@@ -81,8 +81,10 @@ class CloudVideosQuery implements IOrdersListener {
 					|| typeof elem.ext !== 'string'
 					|| typeof elem.size !== 'number'
 					|| typeof elem.ts !== 'number'
-					|| (elem.cam && typeof elem.cam !== 'string'))
-					throw new Error('Nieprawidłowe dane nagrania')
+					|| (elem.cam && typeof elem.cam !== 'string')) {
+					console.error('Nieprawidłowe dane nagrania', iter.key, elem)
+					return
+				}
 				elem.no = strToInt(iter.key)
 				const order = this.orders && this.orders[iter.key] && this.orders[iter.key] === elem.ext
 				if (order !== undefined)
