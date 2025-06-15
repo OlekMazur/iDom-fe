@@ -17,7 +17,7 @@
 	"devDependencies": {
 		"@fortawesome/fontawesome-free": "^6.7.2",
 		"@fortawesome/fontawesome-svg-core": "^6.7.2",
-		"@rollup/plugin-commonjs": "^28.0.3",
+		"@rollup/plugin-commonjs": "^28.0.5",
 		"@rollup/plugin-node-resolve": "^16.0.1",
 		"@rollup/plugin-replace": "^6.0.2",
 		"@rollup/plugin-terser": "^0.4.4",
