@@ -21,7 +21,7 @@
 
 div.videos {
 	display: grid;
-	grid-gap: 0.5em;
+	gap: 0.5em;
 	margin: 0.5em;
 }
 
